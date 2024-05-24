@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import { ImageData } from "../../pages/main/main";
-import Canvas from "../Canvas/canvas";
 
-export interface Size<T> {
-    width: T;
-    height: T;
-}
+// Interfaces
+import { ImageData } from "../../interfaces/imageData";
+import { Size } from "../../interfaces/size";
+
+// Components
+import Canvas from "../Canvas/canvas";
 
 export interface DisplayerProps {
     imageData: ImageData | undefined;
@@ -14,9 +14,7 @@ export interface DisplayerProps {
 const Displayer = (props: DisplayerProps) => {
     const canvasParentRef = useRef<HTMLDivElement>(null);
 
-    const [originalSize, setOriginalSize] = useState<Size<number> | undefined>(undefined);
     const [currentSize, setCurrentSize] = useState<Size<number> | undefined>(undefined);
-    const [scale, setScale] = useState<Size<number> | undefined>(undefined);
     const [imageData, setImageData] = useState<ImageData | undefined>(undefined);
 
     const handleWindowResize = () => {

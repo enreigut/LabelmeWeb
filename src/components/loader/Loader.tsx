@@ -1,11 +1,6 @@
 import { useEffect, useState } from "react";
-import { Size } from "../displayer/Displayer";
-
-export interface ImageData {
-    name: string;
-    size: Size<number>;
-    urlResource: string;
-};
+import { Size } from "../../interfaces/size";
+import { ImageData } from "../../interfaces/imageData";
 
 export interface LoaderProps {
     loadImageData: (data: ImageData | undefined) => void;

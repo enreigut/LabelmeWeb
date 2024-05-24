@@ -1,13 +1,9 @@
 import { useState } from "react";
 
 import Loader from "../../components/loader/Loader";
-import Displayer, { Size } from "../../components/displayer/Displayer";
+import Displayer from "../../components/displayer/Displayer";
+import { ImageData } from "../../interfaces/imageData";
 
-export interface ImageData {
-    name: string;
-    size: Size<number>;
-    urlResource: string;
-};
 
 const MainPage = () => {
     const [imageData, setImageData] = useState<ImageData | undefined>(undefined);
