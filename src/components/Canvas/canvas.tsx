@@ -12,9 +12,13 @@ import { Size } from "../../interfaces/size";
 interface ImageCanvasProps {
     parentRef: HTMLDivElement | null;
     imageData: ImageData | undefined;
+    sendDataArea: (dataAreas: Array<DataArea>) => void;
 }; 
 
 const Canvas = ( props: ImageCanvasProps ) => {
+    // Configuration
+    const minDistanceFromPointToMergeInPx: number = 10;
+
     // References    
     const canvasRef = useRef<HTMLCanvasElement>(null);
     
@@ -35,48 +39,63 @@ const Canvas = ( props: ImageCanvasProps ) => {
     const [dataAreas, seDataAreas] = useState<Array<DataArea>>([]);
 
     const handleMouseDown = (e: React.MouseEvent) => {
-        if (canvasRef.current) {
-            const rect = canvasRef.current.getBoundingClientRect();
+        if(e.button === 0) {
+            if (canvasRef.current) {
+                const rect = canvasRef.current.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
 
-            const mouseX = e.clientX - rect.left;
-            const mouseY = e.clientY - rect.top;
-            const cursor: Point = {x: mouseX, y: mouseY, scale: {
-                    width: canvasRef.current.width,
-                    height: canvasRef.current.height
+                const canvasSize = {width: canvasRef.current.width, height: canvasRef.current.height};
+
+                const cursor: Point = {x: mouseX, y: mouseY, scale: {
+                        width: canvasRef.current.width,
+                        height: canvasRef.current.height
+                    }
+                };
+    
+                if (!isDrawing) {
+                    setIsDrawing(true);
                 }
-            };
-
-            if (!isDrawing) {
-                setIsDrawing(true);
-            }
-
-            if (!clicked) {
-                setClicked(true);
-
-                let pointToSet: Point = cursor;
-
-                if (points.length >= 1) {
-                    if (calculateDistanceBetweenPoints(cursor, points[0], {width: canvasRef.current.width, height: canvasRef.current.height}) <= 10) {
-                        pointToSet = points[0];
+    
+                if (!clicked) {
+                    setClicked(true);
+    
+                    let pointToSet: Point = cursor;
+    
+                    // Bigger than 2 since we only want to close polygon not lines
+                    // We can do some more complex logic here to see if:
+                    //  - The points have similar slope meaning they are in a straightline (we want to not allow this I guess)
+                    if (points.length >= 2) {
+                        if (calculateDistanceBetweenPoints(cursor, points[0], canvasSize) <= minDistanceFromPointToMergeInPx) {
+                            pointToSet = points[0];
+                        }
+                    }
+    
+                    // If the pointToSet is different to the cursor one (point in the pos when the click event happened), 
+                    // meaning, we are entering condition from above, means we did close the polygon
+                    if (pointToSet !== cursor) {
+                        setIsDrawing(false);
+                        const polygon: Polygon = {points: points};
+                        seDataAreas([...dataAreas, {
+                            polygon: polygon,
+                            color: generateRandomColor(0.5),
+                            label: `${labelId}`
+                        }]);
+                        setLabelId(labelId + 1);
+                        setPoints([]);
+                    } else {
+                        // If the point is further away enough from previous poinyt we set it, if not, nope
+                        if (points.length > 0) {
+                            if (calculateDistanceBetweenPoints(points[points.length - 1], pointToSet, canvasSize) > minDistanceFromPointToMergeInPx) {
+                                setPoints([...points, pointToSet]);
+                            }
+                        } else {
+                            setPoints([...points, pointToSet]);
+                        }
                     }
                 }
-
-                if (pointToSet !== cursor) {
-                    setIsDrawing(false);
-                    const polygon: Polygon = {points: points};
-                    seDataAreas([...dataAreas, {
-                        polygon: polygon,
-                        color: generateRandomColor(0.5),
-                        label: `${labelId}`
-                    }]);
-                    setLabelId(labelId + 1);
-                    setPoints([]);
-                } else {
-                    setPoints([...points, pointToSet]);
-                }
-
-            }
-        }        
+            }   
+        }
     };
 
     const handleMouseMove = (e: React.MouseEvent) => {
@@ -137,7 +156,7 @@ const Canvas = ( props: ImageCanvasProps ) => {
             drawText(ctx, dataArea.label, centroid, 16, "Arial", "white", canvasSize);
 
             // Draw the polygon controls
-            drawPolygonControls(ctx, dataArea.polygon, canvasSize);
+            drawPolygonControls(ctx, dataArea.polygon, dataArea.color, canvasSize);
         });
 
         // Draw current drawing which is stored in points state
@@ -174,9 +193,9 @@ const Canvas = ( props: ImageCanvasProps ) => {
                 // If we are not in the last point, we draw the line from point to point
                 // If not we render from point to cursor
                 if (idx > 0 && idx < points.length) {
-                    drawLine(ctx, { start: points[idx - 1], end: points[idx]}, canvasSize)
+                    drawLine(ctx, { start: points[idx - 1], end: points[idx]}, "black", canvasSize)
                 } else {
-                    drawLine(ctx, { start: points[points.length - 1], end: cursorPos}, canvasSize)
+                    drawLine(ctx, { start: points[points.length - 1], end: cursorPos}, "black", canvasSize)
                 }
             }
         });
@@ -196,6 +215,10 @@ const Canvas = ( props: ImageCanvasProps ) => {
             }  
         }
     }
+
+    useEffect(() => {
+        props.sendDataArea(dataAreas);
+    }, [dataAreas])
 
     useEffect(() => {
         if (canvasRef.current && image && imageData) {
@@ -246,23 +269,6 @@ const Canvas = ( props: ImageCanvasProps ) => {
                 onMouseMove={ handleMouseMove }
                 onMouseUp={ handleMouseUp }
             />
-
-            <div style={{width: "100%"}}>
-                <pre 
-                    style={{ 
-                        background: '#f6f8fa', 
-                        padding: '10px', 
-                        borderRadius: '5px', 
-                        whiteSpace: 'pre-wrap', 
-                        wordWrap: 'break-word',
-                        border: '1px solid #ddd',
-                        fontFamily: 'Courier, monospace',
-                        fontSize: '10px'
-                    }}
-                >
-                    {JSON.stringify(dataAreas, null, 2)}
-                </pre>
-            </div>
         </div>
     )
 }

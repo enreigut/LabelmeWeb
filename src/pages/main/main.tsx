@@ -19,8 +19,8 @@ const MainPage = () => {
                 padding: "10px"
             }}
         >
-            <Displayer imageData ={ imageData } />
             <Loader loadImageData = { handleLoadImage }/>
+            <Displayer imageData ={ imageData } />
         </div>
     )
 };

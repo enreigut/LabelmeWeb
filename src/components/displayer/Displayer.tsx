@@ -6,6 +6,8 @@ import { Size } from "../../interfaces/size";
 
 // Components
 import Canvas from "../Canvas/canvas";
+import { DataArea } from "../../interfaces/dataArea";
+import DataAreaInfo from "../DataAreaInfo/dataAreaInfo";
 
 export interface DisplayerProps {
     imageData: ImageData | undefined;
@@ -16,6 +18,7 @@ const Displayer = (props: DisplayerProps) => {
 
     const [currentSize, setCurrentSize] = useState<Size<number> | undefined>(undefined);
     const [imageData, setImageData] = useState<ImageData | undefined>(undefined);
+    const [dataAreas, setDataAreas] = useState<Array<DataArea> | undefined>(undefined);
 
     const handleWindowResize = () => {
         if (canvasParentRef.current) {
@@ -26,9 +29,13 @@ const Displayer = (props: DisplayerProps) => {
         }
     };
 
+    const handleDataAreas = (data: Array<DataArea>) => {
+        setDataAreas(data);
+    };
+
     useEffect(() => {
         setImageData(props.imageData);
-    }, [props])
+    }, [props]);
 
     useEffect(() => {
         handleWindowResize();
@@ -44,13 +51,16 @@ const Displayer = (props: DisplayerProps) => {
                 <Canvas 
                     parentRef = { canvasParentRef.current } 
                     imageData = { imageData }
+                    sendDataArea = { handleDataAreas }
                 />
             </div>
 
-            <div style={{ width: "100%" }} >
-                <p>{`Name: ${props.imageData?.name}`}</p>
-                <p>{`Original size (width x height): ${imageData?.size.width} px, ${imageData?.size.height} px`}</p>
-                <p>{`Current size (width x height): ${currentSize?.width} px, ${currentSize?.height} px`}</p>
+            <div style={{width: "100%"}}>
+                { 
+                    dataAreas && dataAreas.length > 0 ? dataAreas.map((dataArea) => {
+                        return (<DataAreaInfo dataArea={dataArea} />)
+                    }) : <p>Draw something!</p>
+                }
             </div>
         </div>
     )
