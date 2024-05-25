@@ -1,16 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 
-import { calculateCentroidOfPolygon, calculateDistanceBetweenPoints } from "../../utils/math";
+import { calculateCentroidOfPolygon, calculateDistanceBetweenPoints, calculateRelativePoint } from "../../utils/math";
+import { drawCircle, drawLine, drawPolygon, drawPolygonControls, drawText, generateRandomColor } from "../../utils/draw";
+import {v4 as uuidv4} from 'uuid'
 
 import { Point } from "../../interfaces/point";
 import { DataArea } from "../../interfaces/dataArea";
 import { Polygon } from "../../interfaces/polygon";
 import { ImageData } from "../../interfaces/imageData";
-import { drawCircle, drawLine, drawPolygon, drawPolygonControls, drawText, generateRandomColor } from "../../utils/draw";
 import { Size } from "../../interfaces/size";
+import { Labelme, Shape } from "../../interfaces/labelme";
 
 interface ImageCanvasProps {
-    parentRef: HTMLDivElement | null;
     imageData: ImageData | undefined;
     sendDataArea: (dataAreas: Array<DataArea>) => void;
 }; 
@@ -19,14 +20,16 @@ const Canvas = ( props: ImageCanvasProps ) => {
     // Configuration
     const minDistanceFromPointToMergeInPx: number = 10;
 
-    // References    
+    // References
+    const parentRef = useRef<HTMLDivElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     
     // States
     // Counter to set automatic labels
     const [labelId, setLabelId] = useState<number>(0);
-    const [cursorPos, setCursorPos] = useState<Point | undefined>(undefined); 
     
+    const [currentSize, setCurrentSize] = useState<Size<number> | undefined>(undefined);
+    const [cursorPos, setCursorPos] = useState<Point | undefined>(undefined); 
     const [imageData, setImageData] = useState<ImageData | undefined>(undefined);
     const [image, setImage] = useState<HTMLImageElement | null>(null);
     
@@ -36,7 +39,7 @@ const Canvas = ( props: ImageCanvasProps ) => {
     const [isEditing, setIsEditing] = useState<boolean>(false);
     
     const [points, setPoints] = useState<Array<Point>>([]);
-    const [dataAreas, seDataAreas] = useState<Array<DataArea>>([]);
+    const [dataAreas, setDataAreas] = useState<Array<DataArea>>([]);
 
     const handleMouseDown = (e: React.MouseEvent) => {
         if(e.button === 0) {
@@ -76,10 +79,11 @@ const Canvas = ( props: ImageCanvasProps ) => {
                     if (pointToSet !== cursor) {
                         setIsDrawing(false);
                         const polygon: Polygon = {points: points};
-                        seDataAreas([...dataAreas, {
-                            polygon: polygon,
+                        setDataAreas([...dataAreas, {
+                            id: uuidv4(),
+                            label: `${labelId}`,
                             color: generateRandomColor(0.5),
-                            label: `${labelId}`
+                            polygon: polygon
                         }]);
                         setLabelId(labelId + 1);
                         setPoints([]);
@@ -165,7 +169,7 @@ const Canvas = ( props: ImageCanvasProps ) => {
         }
     }
 
-    // Functon that display what is being currently drawn
+    // Function that display what is being currently drawn
     const draw = (
         ctx: CanvasRenderingContext2D,
         canvasRef: HTMLCanvasElement,
@@ -216,6 +220,15 @@ const Canvas = ( props: ImageCanvasProps ) => {
         }
     }
 
+    const handleWindowResize = () => {
+        if (parentRef.current) {
+            setCurrentSize({
+                width: parentRef.current.clientWidth,
+                height: parentRef.current.clientHeight
+            });
+        }
+    };
+
     useEffect(() => {
         props.sendDataArea(dataAreas);
     }, [dataAreas])
@@ -237,6 +250,12 @@ const Canvas = ( props: ImageCanvasProps ) => {
 
     useEffect(() => {
         handleCanvasUpdate();
+        
+        // If image changes, we need to clean everything
+        setLabelId(0);
+        setDataAreas([]);
+        setPoints([]);
+
     }, [image])
 
     useEffect(() => {
@@ -249,20 +268,34 @@ const Canvas = ( props: ImageCanvasProps ) => {
 
     useEffect(() => {
         setImageData(props.imageData);
+    }, [props]);
 
-        if (canvasRef.current) {
-            if (props.parentRef) {
-                canvasRef.current.width = props.parentRef.clientWidth;
-            }
-
-            if (image && imageData) {
-                handleCanvasUpdate();
+    useEffect(() => {
+        if (parentRef.current) {
+            if (canvasRef.current) {
+                if (currentSize) {
+                    canvasRef.current.width = currentSize.width;
+                }
+                
+                if (image && imageData) {
+                    handleCanvasUpdate();
+                }
             }
         }
-    }, [props])
+    }, [currentSize])
+
+    useEffect(() => {
+        handleWindowResize();
+
+        window.addEventListener("resize", handleWindowResize, false);
+
+        return () => {
+            window.removeEventListener("resize", handleWindowResize);
+        }
+    }, []);
 
     return (
-        <div style = {{ width: "100%" }}>
+        <div ref = { parentRef }>
             <canvas 
                 ref = { canvasRef } 
                 onMouseDown={ handleMouseDown }

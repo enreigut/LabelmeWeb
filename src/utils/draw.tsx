@@ -5,8 +5,8 @@ import { Vector2 } from "../interfaces/vector2";
 
 import { calculateRelativePoint } from "./math";
 
-// Function that generates a random rgb(a) color, a bein opacity is set manually
-export const generateRandomColor = (opacity: number) => {
+// Function that generates a random rgb(a) color, a being opacity is set manually
+export const generateRandomColor = (opacity: number): string => {
     var o = Math.round, r = Math.random, s = 255;
     return `rgba(${o(r()*s)}, ${o(r()*s)}, ${o(r()*s)}, ${opacity})`; 
 };
@@ -16,9 +16,15 @@ export const getColorFromString = (color: string): Array<string> => {
     return color.replace("rgba(", "").replace(")", "").split(",");
 };
 
-// Functon that generates a random rgb(a) color, a bein opacity is set manually
+// Functon that lets you build a color from its components
 export const buildColorFromColorComponents = (rgba: Array<string>) => {
     return `rgba(${rgba[0]}, ${rgba[1]}, ${rgba[2]}, ${rgba[3]})`; 
+};
+
+// Functon that allows to change the opacity of a given color
+export const changeOpcaityFromColor = (rgba: string, opacity: number): string => {
+    const components = getColorFromString(rgba);
+    return `rgba(${components[0]}, ${components[1]}, ${components[2]}, ${opacity})`; 
 };
 
 // Function to draw a circle on a canvas
