@@ -22,7 +22,7 @@ const Displayer = (props: DisplayerProps) => {
     return (
         <div className="w-100">
 
-            <div className="row mb-1">
+            <div className="row mb-4">
                 <div className="col-12">
                     <h2 className="color-white">Labels</h2>
                 </div>
@@ -39,7 +39,13 @@ const Displayer = (props: DisplayerProps) => {
                             </div>
                         </div>
                     )
-                    :<p className="color-white">Waiting for some labels to get going</p>
+                    :(
+                        <div className="row">
+                            <div className="col-12">
+                                <p className="color-white">Waiting for some labels to get going</p>
+                            </div>
+                        </div>
+                    )
             }
 
             {

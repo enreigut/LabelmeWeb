@@ -119,6 +119,13 @@ p                       { font-family: 'Open Sans';}
 .pt-3                   { padding-top: 15px; }
 .pt-4                   { padding-top: 20px; }
 
+.pr-0                   { padding-right: 0px; }
+.pr-1                   { padding-right: 5px; }
+.pr-2                   { padding-right: 10px; }
+.pr-3                   { padding-right: 15px; }
+.pr-4                   { padding-right: 20px; }
+
+
 /* Positions */
 .p-absolute             { position: absolute; }
 .p-relative             { position: relative; }
@@ -144,6 +151,9 @@ p                       { font-family: 'Open Sans';}
 .h-50-px                { height: 50px; }
 .h-75-px                { height: 75px; }
 .h-100-px               { height: 100px; }
+
+.mh-320-px              { max-height: 320px; }
+
 
 .h-fit                  {height: fit-content; }
 
@@ -222,6 +232,13 @@ p                       { font-family: 'Open Sans';}
 .border-bottom-4        { border-bottom: 4px solid; }
 .border-bottom-5        { border-bottom: 5px solid; }
 
+.border-left-0        { border-left: 0px solid; }
+.border-left-1        { border-left: 1px solid; }
+.border-left-2        { border-left: 2px solid; }
+.border-left-3        { border-left: 3px solid; }
+.border-left-4        { border-left: 4px solid; }
+.border-left-5        { border-left: 5px solid; }
+
 .border-radius-0        { border-radius: 0px; }
 .border-radius-1        { border-radius: 1px; }
 .border-radius-2        { border-radius: 2px; }
@@ -237,6 +254,8 @@ p                       { font-family: 'Open Sans';}
 
 /* Overflow */
 .o-hidden               { overflow: hidden; }
+.o-auto                 { overflow: auto; }
+.o-x-auto               { overflow-x: auto; }
 
 /* Cursor */
 .cursor-pointer         { cursor: pointer; }

@@ -128,6 +128,7 @@ const Loader = (props: LoaderProps) => {
                 <div className = "col-3">
                     <Submit1
                         text="Submit File"
+                        accept="image/*"
                         onChange = { loadImage }
                     />
                 </div>
@@ -143,23 +144,25 @@ const Loader = (props: LoaderProps) => {
                                     ? (
                                         <Box 
                                             text={`Loaded image: ${imageData.name}`} 
-                                            backgroundColor="rgba(255,255,255,0.5)" 
-                                            borderColor="rgba(255,255,255,0.8)"
+                                            backgroundColor="#2e3440"
                                         >
-                                            <div className="d-flex">
+                                            <div className="d-flex my-2">
                                                 <Submit1 
-                                                    text = "Load Data"
+                                                    text = "Load Labels"
                                                     backgroundColor = "#1dd1a1"
                                                     borderColor = "#10ac84"
+                                                    accept = "*.json"
                                                     onChange={ loadData }
                                                 />
 
-                                                <Button1 
-                                                    text = "Export Data"
-                                                    backgroundColor = "#54a0ff"
-                                                    borderColor = "#2e86de"
-                                                    onClick={ exportDataAreas }
-                                                />
+                                                <div className="mx-2">
+                                                    <Button1 
+                                                        text = "Export Data"
+                                                        backgroundColor = "#54a0ff"
+                                                        borderColor = "#2e86de"
+                                                        onClick={ exportDataAreas }
+                                                    />
+                                                </div>
 
                                                 <Button1 
                                                     text = "Delete Image"

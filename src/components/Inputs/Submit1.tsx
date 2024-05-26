@@ -5,6 +5,7 @@ export interface Submit1Props {
     backgroundColor?: string;
     borderColor?: string;
     fontColor?: string;
+    accept?: string;
     onChange: ChangeEventHandler<HTMLInputElement>;
 }
 
@@ -22,6 +23,7 @@ const Submit1 = (props: Submit1Props) => {
                 className="d-none"
                 type="file"
                 onChange={ props.onChange } 
+                accept = { props.accept }
             />
             <span style={{ color: props.fontColor ?? "white" }}>{ props.text }</span>
         </label>

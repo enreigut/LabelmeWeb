@@ -10,6 +10,7 @@ import Displayer from "../../components/Displayer/Displayer";
 import Canvas from "../../components/Canvas/canvas";
 import Box from "../../components/Box/box";
 import JSONViewer from "../../components/JSONViewer/jsonViewer";
+import Exporter from "../../components/Exporter/Exporter";
 
 
 const MainPage = () => {
@@ -94,17 +95,17 @@ const MainPage = () => {
 
             <div className="row">
                 <div className="col-10 col-m-10 p-2 mx-auto">
-                    <JSONViewer object = { dataToExport } />
-                </div>
-            </div>
-
-            <div className="row">
-                <div className="col-10 col-m-10 p-2 mx-auto">
                     <Displayer 
                         dataAreas = { dataAreas }
                         updateDataAreas = { updateDataAreas }
                         deleteDataAreaFromDataAreas = { deleteDataAreaFromDataAreas }
                     />
+                </div>
+            </div>
+
+            <div className="row">
+                <div className="col-10 col-m-10 p-2 mx-auto">
+                    <Exporter dataToExport = { dataToExport }/>
                 </div>
             </div>
 
