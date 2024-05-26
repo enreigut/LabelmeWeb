@@ -20,11 +20,18 @@ const Exporter = (props: ExporterProps) => {
                 </div>
             </div>
 
-            <div className="row">
-                <div className="col-12">
-                    <JSONViewer object = { props.dataToExport } />
-                </div>
-            </div>
+            {
+                props.dataToExport
+                ? (
+                    <div className="row">
+                        <div className="col-12">
+                            <JSONViewer object = { props.dataToExport } />
+                        </div>
+                    </div>
+                )
+                : <></>
+            }
+           
         </div>
     )
 };

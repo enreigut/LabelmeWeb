@@ -354,10 +354,13 @@ const JSONViewer = ( props: JSONViewerProps ) => {
                 backgroundColor: "#2e3440"
             }}
         >
-            <div className="row mb-4">
+            <div className="row">
                 <div className="col-12">
                     <div className="d-flex">
                         <TooltipButton
+                            backgroundColor = "#1dd1a1"
+                            borderColor = "#10ac84"
+                            fontColor="white"
                             text="Download .json"
                             onClick={() => {
                                 const href = window.URL.createObjectURL(new Blob([objectToString()], {type: 'json'}));
@@ -371,17 +374,22 @@ const JSONViewer = ( props: JSONViewerProps ) => {
                             }} 
                         />
 
-                        <TooltipButton
-                            text="Copy to clipboard"
-                            onClick={() => {
-                                navigator.clipboard.writeText(objectToString());
-                            }} 
-                        />
+                        <div className="ml-2">
+                            <TooltipButton
+                                text="Copy to clipboard"
+                                backgroundColor = "#54a0ff"
+                                borderColor = "#2e86de"
+                                fontColor="white"
+                                onClick={() => {
+                                    navigator.clipboard.writeText(objectToString());
+                                }} 
+                            />
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div>
+            <div className="py-4">
                 {
                     props.object !== undefined
                     ? (

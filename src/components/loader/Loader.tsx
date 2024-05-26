@@ -151,7 +151,7 @@ const Loader = (props: LoaderProps) => {
                                                     text = "Load Labels"
                                                     backgroundColor = "#1dd1a1"
                                                     borderColor = "#10ac84"
-                                                    accept = "*.json"
+                                                    accept = ".json"
                                                     onChange={ loadData }
                                                 />
 
