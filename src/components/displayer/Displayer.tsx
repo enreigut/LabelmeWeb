@@ -1,59 +1,75 @@
-import { useEffect, useRef, useState } from "react";
-import { ImageData } from "../../pages/main/main";
-import Canvas from "../Canvas/canvas";
-
-export interface Size<T> {
-    width: T;
-    height: T;
-}
+// Components
+import { DataArea } from "../../interfaces/dataArea";
+import DataAreaInfo from "../DataAreaInfo/DataAreaInfo";
 
 export interface DisplayerProps {
-    imageData: ImageData | undefined;
+    dataAreas: Array<DataArea> | undefined;
+    updateDataAreas: (dataArea: DataArea) => void;
+    deleteDataAreaFromDataAreas: (dataArea: DataArea) => void;
 }
 
 const Displayer = (props: DisplayerProps) => {
-    const canvasParentRef = useRef<HTMLDivElement>(null);
 
-    const [originalSize, setOriginalSize] = useState<Size<number> | undefined>(undefined);
-    const [currentSize, setCurrentSize] = useState<Size<number> | undefined>(undefined);
-    const [scale, setScale] = useState<Size<number> | undefined>(undefined);
-    const [imageData, setImageData] = useState<ImageData | undefined>(undefined);
+    const updateDataArea = (dataArea: DataArea) => {
+        props.updateDataAreas(dataArea);
+    }
 
-    const handleWindowResize = () => {
-        if (canvasParentRef.current) {
-            setCurrentSize({
-                width: canvasParentRef.current.clientWidth,
-                height: canvasParentRef.current.clientHeight
-            });
-        }
-    };
+    const deleteDataArea = (dataArea: DataArea) => {
+        props.deleteDataAreaFromDataAreas(dataArea);
+    }
 
-    useEffect(() => {
-        setImageData(props.imageData);
-    }, [props])
-
-    useEffect(() => {
-        handleWindowResize();
-
-        window.addEventListener('resize', () => {
-            handleWindowResize();
-        }, false);
-    }, []);
 
     return (
-        <div style = {{ width: "100%" }}>
-            <div ref = { canvasParentRef } style={{ width: "100%" }}>
-                <Canvas 
-                    parentRef = { canvasParentRef.current } 
-                    imageData = { imageData }
-                />
+        <div className="w-100">
+
+            <div className="row mb-4">
+                <div className="col-12">
+                    <h2 className="color-white">Labels</h2>
+                </div>
             </div>
 
-            <div style={{ width: "100%" }} >
-                <p>{`Name: ${props.imageData?.name}`}</p>
-                <p>{`Original size (width x height): ${imageData?.size.width} px, ${imageData?.size.height} px`}</p>
-                <p>{`Current size (width x height): ${currentSize?.width} px, ${currentSize?.height} px`}</p>
-            </div>
+            {
+                props.dataAreas !== undefined && 0 !== props.dataAreas.length 
+                    ? (
+                        <div className="row">
+                            <div className="col-12">
+                                <p className="color-white mb-2">Some related information to the drawn areas:</p>
+                                <p className="font-small color-white mb-2"><b>Number of polygons:</b> {props.dataAreas.length}</p>
+                                <p className="font-small color-white mb-2"><b>Number of vertices:</b> {props.dataAreas.reduce((x,y) => {return (x + y.polygon.points.length)}, 0)}</p>
+                            </div>
+                        </div>
+                    )
+                    :(
+                        <div className="row">
+                            <div className="col-12">
+                                <p className="color-white">Waiting for some labels to get going</p>
+                            </div>
+                        </div>
+                    )
+            }
+
+            {
+                props.dataAreas 
+                    ? (
+                        <div className="row">
+                            <div className="col-12 pb-2">
+                                { 
+                                    props.dataAreas?.map((dataArea, idx) => {
+                                        return (
+                                            <DataAreaInfo 
+                                                key={`data_area_${dataArea.label}_${idx}`} 
+                                                className="mb-2" 
+                                                dataArea= { dataArea }
+                                                updateDataArea = { updateDataArea }
+                                                deleteDataArea = { deleteDataArea }
+                                            />)
+                                    })
+                                }
+                            </div>
+                        </div>
+                    )
+                    :<></>
+            }            
         </div>
     )
 };
