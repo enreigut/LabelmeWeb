@@ -21,7 +21,6 @@ const Submit1 = (props: Submit1Props) => {
             <input
                 className="d-none"
                 type="file"
-                name="image"
                 onChange={ props.onChange } 
             />
             <span style={{ color: props.fontColor ?? "white" }}>{ props.text }</span>

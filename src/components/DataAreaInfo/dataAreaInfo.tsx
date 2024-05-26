@@ -1,5 +1,4 @@
 import { useState } from "react";
-
 import { changeOpcaityFromColor, generateRandomColor } from "../../utils/draw";
 
 import { DataArea } from "../../interfaces/dataArea"
@@ -12,10 +11,14 @@ export interface DataAreaInfoProps {
 
     // update method
     updateDataArea: (dataArea: DataArea) => void;
+    deleteDataArea: (dataArea: DataArea) => void;
 }
 
 const DataAreaInfo = ( props: DataAreaInfoProps ) => {
     const [expanded, setExpanded] = useState<boolean>(false);
+
+    const [label, setLabel] = useState<string>(props.dataArea.label);
+    const [edit, setEdit] = useState<boolean>(false);
 
     return (
         <div className={"row " + props.className ?? ""}>
@@ -24,7 +27,61 @@ const DataAreaInfo = ( props: DataAreaInfoProps ) => {
                     className="w-100 border-3 border-radius-5 p-4" 
                     style={{ backgroundColor: "rgba(255,255,255,0.2)", borderColor: props.dataArea.color }}
                 >
-                    <h4 className="color-white mb-2"><b>Label name:</b> { props.dataArea.label }</h4>
+                    <div className="d-flex mb-4">
+                        {
+                            edit 
+                            ? (
+                                <h4 className="color-white my-auto flex-grow">
+                                    <b>Label name:</b>
+                                    <input 
+                                        type="text" 
+                                        onChange = {(e) => {
+                                            setLabel(e.target.value);
+                                        }}
+                                        value = { label }
+                                        placeholder = { props.dataArea.label } 
+                                    />
+                                </h4>
+                            )
+                            : <h4 className="color-white my-auto flex-grow"><b>Label name:</b> { props.dataArea.label }</h4>
+                        }
+ 
+                        <div className="d-flex">
+                            {
+                                edit
+                                    ? <TooltipButton 
+                                        text= "Save"
+                                        backgroundColor = "#54a0ff"
+                                        borderColor = "#2e86de"
+                                        fontColor="white"
+                                        onClick={() => {
+                                            props.dataArea.label = label;
+                                            props.updateDataArea(props.dataArea);
+                                            setEdit(false);
+                                            setExpanded(false);
+                                        }}
+                                    /> 
+                                    : <TooltipButton 
+                                            text= "Edit"
+                                            backgroundColor = "#54a0ff"
+                                            borderColor = "#2e86de"
+                                            fontColor="white"
+                                            onClick={() => {
+                                                setEdit(true);
+                                                setExpanded(true);
+                                            }}
+                                        />
+                            }
+                            
+                            <TooltipButton 
+                                text= "Delete"
+                                backgroundColor = "#ff6b6b"
+                                borderColor = "#ee5253"
+                                fontColor="white"
+                                onClick={() => { props.deleteDataArea(props.dataArea); } }
+                            />
+                        </div>
+                    </div>
                     
                     <div className="d-flex mb-1">
                         <p className="font-small color-white my-auto"><b>Color:</b></p>
@@ -36,7 +93,7 @@ const DataAreaInfo = ( props: DataAreaInfoProps ) => {
                                 borderColor = { changeOpcaityFromColor(props.dataArea.color, 1) }
                                 fontColor = "white"
                                 onClick={() => {
-                                    props.dataArea.color = generateRandomColor(0.5);;
+                                    props.dataArea.color = generateRandomColor(0.5);
                                     props.updateDataArea(props.dataArea);
                                 }}
                             />
@@ -57,7 +114,7 @@ const DataAreaInfo = ( props: DataAreaInfoProps ) => {
 
                     </div>
                     
-                    <div style={{width: "100%"}}>
+                    <div className="w-100 mb-2">
                         <pre 
                             className="font-small p-4 border-radius-5 border-1"
                             style={{ 
@@ -72,6 +129,7 @@ const DataAreaInfo = ( props: DataAreaInfoProps ) => {
                             {JSON.stringify(props.dataArea.polygon, null, 2)}
                         </pre>
                     </div>
+                    
                 </div> 
             </div>
         </div>

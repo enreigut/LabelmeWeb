@@ -5,6 +5,7 @@ import DataAreaInfo from "../DataAreaInfo/DataAreaInfo";
 export interface DisplayerProps {
     dataAreas: Array<DataArea> | undefined;
     updateDataAreas: (dataArea: DataArea) => void;
+    deleteDataAreaFromDataAreas: (dataArea: DataArea) => void;
 }
 
 const Displayer = (props: DisplayerProps) => {
@@ -12,6 +13,11 @@ const Displayer = (props: DisplayerProps) => {
     const updateDataArea = (dataArea: DataArea) => {
         props.updateDataAreas(dataArea);
     }
+
+    const deleteDataArea = (dataArea: DataArea) => {
+        props.deleteDataAreaFromDataAreas(dataArea);
+    }
+
 
     return (
         <div className="w-100">
@@ -48,7 +54,8 @@ const Displayer = (props: DisplayerProps) => {
                                                 key={`data_area_${dataArea.label}_${idx}`} 
                                                 className="mb-2" 
                                                 dataArea= { dataArea }
-                                                updateDataArea = { updateDataArea } 
+                                                updateDataArea = { updateDataArea }
+                                                deleteDataArea = { deleteDataArea }
                                             />)
                                     })
                                 }

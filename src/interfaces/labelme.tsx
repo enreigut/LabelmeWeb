@@ -14,4 +14,6 @@ export interface Labelme {
     version: string;
     flags: Flag;
     shapes: Array<Shape>;
+    imageHeight: number;
+    imageWidth: number;
 };

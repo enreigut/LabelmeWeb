@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import {v4 as uuidv4} from 'uuid'
 import { calculateRelativePoint } from "../../utils/math";
 
 import { Size } from "../../interfaces/size";
@@ -9,13 +10,16 @@ import { Labelme, Shape } from "../../interfaces/labelme";
 import Box from "../Box/box";
 import Submit1 from "../Inputs/Submit1";
 import Button1 from "../Inputs/Button1";
+import { generateRandomColor } from "../../utils/draw";
 
 
 export interface LoaderProps {
     dataAreas: Array<DataArea> | undefined;
+    canvasSize: Size<number> | undefined;
 
     loadImageData: (data: ImageData | undefined) => void;
-    exportDataArea: (labelme: Labelme) => void;
+    loadDataAreas: (data: Array<DataArea> | undefined) => void;
+    exportDataArea: (labelme: Labelme, canvasSize: Size<number>) => void;
 };
 
 const Loader = (props: LoaderProps) => {
@@ -23,14 +27,11 @@ const Loader = (props: LoaderProps) => {
     const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
     const [imageData, setImageData] = useState<ImageData | undefined>(undefined);
     
-    useEffect(() => {
-        props.loadImageData(imageData);
-    }, [ imageData, props]);
-
-    const loadImage = (e:React.ChangeEvent<HTMLInputElement>) => {
+    
+    const loadImage = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             setError(false)
-
+            
             const imageFile = e.target.files[0];
             const imageUrl = URL.createObjectURL(imageFile);
             
@@ -49,22 +50,22 @@ const Loader = (props: LoaderProps) => {
                 setError(true);
                 setErrorMessage("Failed to load image. Are you sure submitted file was an image?");
             });
-        }        
+        }
     };
-
+    
     const getImageData = (imageUrl: string): Promise<Size<number>> => {
         return new Promise<Size<number>>((resolve, reject) => {
             const img = new Image();
-
+            
             img.src = imageUrl;
-
+            
             img.onload = () => {
                 resolve({ 
                     width: img.naturalWidth, 
                     height: img.naturalHeight
-                 });
+                });
             };
-
+            
             img.onerror = (err) => {
                 reject(new Error(`Failed to load image`));
                 setError(true);
@@ -72,30 +73,90 @@ const Loader = (props: LoaderProps) => {
             };
         });
     };
-
+    
     const mapDataAreaToShape = (dataArea: DataArea): Shape => {
         return {
             label: dataArea.label,
             points: dataArea.polygon.points.map((point) => {
-                calculateRelativePoint(point, imageData?.size ?? { width: 1280, height: 720 })
-                return [point.x, point.y]
+                const p = calculateRelativePoint(point, imageData?.size ?? { width: 1280, height: 720 })
+                return [p.x, p.y]
             }),
             group_id: null,
             shape_type: "polygon",
             flags: {}
         }
     };
-
+    
     // Function that maps from DataArea to labelme interface with correct dimensions
     const exportDataAreas = () => {
-        if (props.dataAreas) {
-            props.exportDataArea({
-                version: "4.6.0",
-                flags: {},
-                shapes: props.dataAreas.map((dataArea) => mapDataAreaToShape(dataArea))
-            });
+        if (props.dataAreas && props.canvasSize) {
+            props.exportDataArea(
+                {
+                    version: "4.6.0",
+                    flags: {},
+                    shapes: props.dataAreas.map((dataArea) => mapDataAreaToShape(dataArea)),
+                    imageWidth: imageData?.size.width ?? 1280,
+                    imageHeight: imageData?.size.height ?? 720
+                }, 
+                props.canvasSize
+            );
         }
     };
+
+    const loadData = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            setError(false)
+            
+            const dataFile = e.target.files[0];
+            const filaReader = new FileReader();
+
+            filaReader.onload = (e) => {
+                if (e.target) {
+                    const fileContent = e.target?.result;
+                    const toJson: Labelme = JSON.parse(fileContent?.toString()!);
+                    const dataAreas: Array<DataArea> = toJson.shapes.map((x) => {
+                        return {
+                            id: uuidv4(),
+                            color: generateRandomColor(0.5),
+                            label: x.label,
+                            polygon: {
+                                points: x.points.map((pointArray) => { 
+                                    const relativePoint = calculateRelativePoint(
+                                        { 
+                                            x: pointArray[0],
+                                            y: pointArray[1],
+                                            scale: {
+                                                width: toJson.imageWidth,
+                                                height: toJson.imageHeight
+                                            }
+                                        },
+                                        {
+                                            width: 392,
+                                            height: 256
+                                        }
+                                    );
+                                    return relativePoint;
+                                })
+                            }
+                        }
+                    });
+
+                    props.loadDataAreas(dataAreas);
+
+                }
+            }
+            
+            filaReader.readAsText(dataFile);
+        }
+    }
+
+    const deleteImageData = () => {
+        setImageData(undefined);
+    };
+    
+    useEffect(() => {
+        props.loadImageData(imageData);
+    }, [ imageData ]);
 
     return (
         <div className="w-100">
@@ -122,11 +183,11 @@ const Loader = (props: LoaderProps) => {
                                             borderColor="rgba(255,255,255,0.8)"
                                         >
                                             <div className="d-flex">
-                                                <Button1 
+                                                <Submit1 
                                                     text = "Load Data"
                                                     backgroundColor = "#1dd1a1"
                                                     borderColor = "#10ac84"
-                                                    onClick={() => {}}
+                                                    onChange={ loadData }
                                                 />
 
                                                 <Button1 
@@ -140,7 +201,7 @@ const Loader = (props: LoaderProps) => {
                                                     text = "Delete Image"
                                                     backgroundColor = "#ff6b6b"
                                                     borderColor = "#ee5253"
-                                                    onClick={() => {}}
+                                                    onClick={ deleteImageData }
                                                 />
                                             </div>
                                         </Box>

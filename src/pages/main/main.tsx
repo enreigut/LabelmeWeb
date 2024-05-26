@@ -2,22 +2,32 @@ import { useState } from "react";
 
 import { ImageData } from "../../interfaces/imageData";
 import { DataArea } from "../../interfaces/dataArea";
+import { Labelme } from "../../interfaces/labelme";
+import { Size } from "../../interfaces/size";
 
 import Loader from "../../components/Loader/Loader";
 import Displayer from "../../components/Displayer/Displayer";
 import Canvas from "../../components/Canvas/canvas";
 import Box from "../../components/Box/box";
-import { Labelme } from "../../interfaces/labelme";
 
 
 const MainPage = () => {
     // States
+    const [canvasSize, setCanvasSize] = useState<Size<number> | undefined>(undefined);
     const [imageData, setImageData] = useState<ImageData | undefined>(undefined);
-    const [dataAreas, setDataAreas] = useState<Array<DataArea> | undefined>(undefined);
+    const [dataAreas, setDataAreas] = useState<Array<DataArea> | undefined>([]);
     const [dataToExport, setDataToExport] = useState<Labelme | undefined>(undefined);
+
+    const handleCanvasSize = (canvasSize: Size<number> | undefined) => {
+        setCanvasSize(canvasSize);
+    };
 
     const handleLoadImage = (imageData: ImageData | undefined) => {
         setImageData(imageData);
+
+        if (imageData === undefined) {
+            setDataAreas([]);
+        }
     };
 
     const handleDataAreas = (dataAreas: Array<DataArea> | undefined) => {
@@ -25,10 +35,18 @@ const MainPage = () => {
     };
 
     const updateDataAreas = (dataArea: DataArea) => {
-        if (dataAreas) {
-            const idxOfTargetDataArea = dataAreas.findIndex(x => x.label === dataArea.label);
-            dataAreas[idxOfTargetDataArea] = dataArea;
-            setDataAreas([...dataAreas]);
+        if (dataAreas !== undefined && dataAreas.length > 0) {
+            const idxOfTargetDataArea = dataAreas.findIndex(x => x.id === dataArea.id);
+            if (idxOfTargetDataArea !== -1) {
+                dataAreas[idxOfTargetDataArea] = dataArea;
+                setDataAreas([...dataAreas]);
+            }
+        }
+    };
+
+    const deleteDataAreaFromDataAreas = (dataArea: DataArea) => {
+        if (dataAreas !== undefined && dataAreas.length > 0) {
+            setDataAreas([...dataAreas.filter((x) => x.id !== dataArea.id)]);
         }
     };
 
@@ -51,7 +69,9 @@ const MainPage = () => {
                             ? (
                                 <Canvas 
                                     imageData = { imageData } 
+                                    dataAreas = { dataAreas ?? [] }
                                     sendDataArea = { handleDataAreas }
+                                    handleCanvasSize = { handleCanvasSize }
                                 />
                             )
                             : <Box text="Waiting for image" backgroundColor="rgba(116, 185, 255, 0.4)" borderColor="rgba(116, 185, 255, 0.4)"/>
@@ -63,8 +83,10 @@ const MainPage = () => {
                 <div className="col-10 col-m-10 p-2 mx-auto">
                     <Loader 
                         dataAreas = { dataAreas }
+                        canvasSize = { canvasSize }
+                        loadDataAreas = { handleDataAreas }
                         loadImageData = { handleLoadImage }
-                        exportDataArea = { exportDataAreas } 
+                        exportDataArea = { exportDataAreas }
                     />
                 </div>
             </div>
@@ -91,6 +113,7 @@ const MainPage = () => {
                     <Displayer 
                         dataAreas = { dataAreas }
                         updateDataAreas = { updateDataAreas }
+                        deleteDataAreaFromDataAreas = { deleteDataAreaFromDataAreas }
                     />
                 </div>
             </div>

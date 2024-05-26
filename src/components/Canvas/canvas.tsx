@@ -9,11 +9,12 @@ import { DataArea } from "../../interfaces/dataArea";
 import { Polygon } from "../../interfaces/polygon";
 import { ImageData } from "../../interfaces/imageData";
 import { Size } from "../../interfaces/size";
-import { Labelme, Shape } from "../../interfaces/labelme";
 
 interface ImageCanvasProps {
     imageData: ImageData | undefined;
+    dataAreas: Array<DataArea>;
     sendDataArea: (dataAreas: Array<DataArea>) => void;
+    handleCanvasSize: (canvasSize: Size<number>) => void;
 }; 
 
 const Canvas = ( props: ImageCanvasProps ) => {
@@ -39,7 +40,16 @@ const Canvas = ( props: ImageCanvasProps ) => {
     const [isEditing, setIsEditing] = useState<boolean>(false);
     
     const [points, setPoints] = useState<Array<Point>>([]);
-    const [dataAreas, setDataAreas] = useState<Array<DataArea>>([]);
+    // const [dataAreas, setDataAreas] = useState<Array<DataArea>>([]);
+
+    const handleCanvasSize = () => {
+        if (canvasRef.current) {
+            props.handleCanvasSize({
+                width: canvasRef.current.width,
+                height: canvasRef.current.height,
+            });   
+        }
+    }
 
     const handleMouseDown = (e: React.MouseEvent) => {
         if(e.button === 0) {
@@ -79,7 +89,7 @@ const Canvas = ( props: ImageCanvasProps ) => {
                     if (pointToSet !== cursor) {
                         setIsDrawing(false);
                         const polygon: Polygon = {points: points};
-                        setDataAreas([...dataAreas, {
+                        props.sendDataArea([...props.dataAreas, {
                             id: uuidv4(),
                             label: `${labelId}`,
                             color: generateRandomColor(0.5),
@@ -144,7 +154,7 @@ const Canvas = ( props: ImageCanvasProps ) => {
         ctx.drawImage(image, 0, 0, canvasRef.width, canvasRef.height);
 
         // Draw first polygons that have been arleady set
-        dataAreas.forEach((dataArea) => {
+        props.dataAreas.forEach((dataArea) => {
             drawPolygon(ctx, dataArea.polygon, dataArea.color, canvasRef);
 
             // Calculate centroid for setting the label id
@@ -212,6 +222,8 @@ const Canvas = ( props: ImageCanvasProps ) => {
             const canvasHeight = canvasRef.current.width * aspectRatio;
             canvasRef.current.height = canvasHeight;
 
+            handleCanvasSize();
+
             const ctx = canvasRef.current.getContext('2d');
 
             if (ctx) {
@@ -228,10 +240,6 @@ const Canvas = ( props: ImageCanvasProps ) => {
             });
         }
     };
-
-    useEffect(() => {
-        props.sendDataArea(dataAreas);
-    }, [dataAreas])
 
     useEffect(() => {
         if (canvasRef.current && image && imageData) {
@@ -253,7 +261,7 @@ const Canvas = ( props: ImageCanvasProps ) => {
         
         // If image changes, we need to clean everything
         setLabelId(0);
-        setDataAreas([]);
+        props.sendDataArea([]);
         setPoints([]);
 
     }, [image])
