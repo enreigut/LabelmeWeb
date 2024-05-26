@@ -126,7 +126,7 @@ const DataAreaInfo = ( props: DataAreaInfoProps ) => {
                                 display: expanded ? 'block' : 'none'
                             }}
                         >
-                            {JSON.stringify(props.dataArea.polygon, null, 2)}
+                            { JSON.stringify(props.dataArea.polygon, null, 2) }
                         </pre>
                     </div>
                     

@@ -82,6 +82,12 @@ p                       { font-family: 'Open Sans';}
 .ml-3                   { margin-left: 15px; }
 .ml-4                   { margin-left: 20px; }
 
+.mr-0                   { margin-right: 0px; }
+.mr-1                   { margin-right: 5px; }
+.mr-2                   { margin-right: 10px; }
+.mr-3                   { margin-right: 15px; }
+.mr-4                   { margin-right: 20px; }
+
 /* Paddings */
 .p-0                    { padding: 0px; }   
 .p-1                    { padding: 5px; }   

@@ -1,17 +1,14 @@
 import { useEffect, useState } from "react";
-import {v4 as uuidv4} from 'uuid'
-import { calculateRelativePoint } from "../../utils/math";
+import { mapDataAreaToShape, mapLabelmeToDatashare } from "../../utils/loader";
 
 import { Size } from "../../interfaces/size";
 import { ImageData } from "../../interfaces/imageData";
 import { DataArea } from "../../interfaces/dataArea";
-import { Labelme, Shape } from "../../interfaces/labelme";
+import { Labelme } from "../../interfaces/labelme";
 
 import Box from "../Box/box";
 import Submit1 from "../Inputs/Submit1";
 import Button1 from "../Inputs/Button1";
-import { generateRandomColor } from "../../utils/draw";
-
 
 export interface LoaderProps {
     dataAreas: Array<DataArea> | undefined;
@@ -23,6 +20,13 @@ export interface LoaderProps {
 };
 
 const Loader = (props: LoaderProps) => {
+    // Configuration
+    const defaultImageSize: Size<number> = {
+        width: 1280,
+        height: 720
+    };
+    
+    // States
     const [error, setError] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
     const [imageData, setImageData] = useState<ImageData | undefined>(undefined);
@@ -74,29 +78,16 @@ const Loader = (props: LoaderProps) => {
         });
     };
     
-    const mapDataAreaToShape = (dataArea: DataArea): Shape => {
-        return {
-            label: dataArea.label,
-            points: dataArea.polygon.points.map((point) => {
-                const p = calculateRelativePoint(point, imageData?.size ?? { width: 1280, height: 720 })
-                return [p.x, p.y]
-            }),
-            group_id: null,
-            shape_type: "polygon",
-            flags: {}
-        }
-    };
-    
     // Function that maps from DataArea to labelme interface with correct dimensions
     const exportDataAreas = () => {
-        if (props.dataAreas && props.canvasSize) {
+        if (props.dataAreas && props.canvasSize && imageData) {
             props.exportDataArea(
                 {
                     version: "4.6.0",
                     flags: {},
-                    shapes: props.dataAreas.map((dataArea) => mapDataAreaToShape(dataArea)),
-                    imageWidth: imageData?.size.width ?? 1280,
-                    imageHeight: imageData?.size.height ?? 720
+                    shapes: props.dataAreas.map((dataArea) => mapDataAreaToShape(dataArea, imageData)),
+                    imageWidth: imageData.size.width,
+                    imageHeight: imageData.size.height
                 }, 
                 props.canvasSize
             );
@@ -114,35 +105,8 @@ const Loader = (props: LoaderProps) => {
                 if (e.target) {
                     const fileContent = e.target?.result;
                     const toJson: Labelme = JSON.parse(fileContent?.toString()!);
-                    const dataAreas: Array<DataArea> = toJson.shapes.map((x) => {
-                        return {
-                            id: uuidv4(),
-                            color: generateRandomColor(0.5),
-                            label: x.label,
-                            polygon: {
-                                points: x.points.map((pointArray) => { 
-                                    const relativePoint = calculateRelativePoint(
-                                        { 
-                                            x: pointArray[0],
-                                            y: pointArray[1],
-                                            scale: {
-                                                width: toJson.imageWidth,
-                                                height: toJson.imageHeight
-                                            }
-                                        },
-                                        {
-                                            width: 392,
-                                            height: 256
-                                        }
-                                    );
-                                    return relativePoint;
-                                })
-                            }
-                        }
-                    });
-
+                    const dataAreas: Array<DataArea> = mapLabelmeToDatashare(toJson, props.canvasSize ?? defaultImageSize);
                     props.loadDataAreas(dataAreas);
-
                 }
             }
             
@@ -210,10 +174,6 @@ const Loader = (props: LoaderProps) => {
                         }
                     </div>
                 </div>
-
-            </div>
-
-            <div>
 
             </div>
 

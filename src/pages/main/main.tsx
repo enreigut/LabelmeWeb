@@ -9,6 +9,7 @@ import Loader from "../../components/Loader/Loader";
 import Displayer from "../../components/Displayer/Displayer";
 import Canvas from "../../components/Canvas/canvas";
 import Box from "../../components/Box/box";
+import JSONViewer from "../../components/JSONViewer/jsonViewer";
 
 
 const MainPage = () => {
@@ -93,18 +94,7 @@ const MainPage = () => {
 
             <div className="row">
                 <div className="col-10 col-m-10 p-2 mx-auto">
-                        <pre 
-                            className="font-small p-4 border-radius-5 border-1"
-                            style={{ 
-                                background: '#f6f8fa', 
-                                whiteSpace: 'pre-wrap', 
-                                wordWrap: 'break-word',
-                                fontFamily: 'Courier',
-                                borderColor: '#ddd',
-                            }}
-                        >
-                            { JSON.stringify(dataToExport, null, 2) }
-                        </pre>
+                    <JSONViewer object = { dataToExport } />
                 </div>
             </div>
 
