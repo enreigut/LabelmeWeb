@@ -5,16 +5,17 @@ import { DataArea } from "../../interfaces/dataArea";
 import { Labelme } from "../../interfaces/labelme";
 import { Size } from "../../interfaces/size";
 
-import Loader from "../../components/Loader/Loader";
-import Displayer from "../../components/Displayer/Displayer";
+import Loader from "../../components/Loader/loader";
+import Displayer from "../../components/Displayer/displayer";
 import Canvas from "../../components/Canvas/canvas";
 import Box from "../../components/Box/box";
-import JSONViewer from "../../components/JSONViewer/jsonViewer";
-import Exporter from "../../components/Exporter/Exporter";
+import Exporter from "../../components/Exporter/exporter";
 
 
 const MainPage = () => {
     // States
+    const [mode, setMode] = useState<string | undefined>(undefined);
+    const [editedDataArea, setEditedDataArea] = useState<DataArea | undefined>(undefined);
     const [canvasSize, setCanvasSize] = useState<Size<number> | undefined>(undefined);
     const [imageData, setImageData] = useState<ImageData | undefined>(undefined);
     const [dataAreas, setDataAreas] = useState<Array<DataArea> | undefined>([]);
@@ -36,14 +37,25 @@ const MainPage = () => {
         setDataAreas(dataAreas);
     };
 
+    const handleMode = (mode: string) => {
+        setMode(mode);
+    };
+
     const updateDataAreas = (dataArea: DataArea) => {
         if (dataAreas !== undefined && dataAreas.length > 0) {
             const idxOfTargetDataArea = dataAreas.findIndex(x => x.id === dataArea.id);
             if (idxOfTargetDataArea !== -1) {
                 dataAreas[idxOfTargetDataArea] = dataArea;
+                setMode("Waiting")
+                setEditedDataArea(undefined);
                 setDataAreas([...dataAreas]);
             }
         }
+    };
+
+    const editDataArea = (dataArea: DataArea) => {
+        setMode(`Editing Data Area with label: ${ dataArea.label }`)
+        setEditedDataArea(dataArea);
     };
 
     const deleteDataAreaFromDataAreas = (dataArea: DataArea) => {
@@ -66,14 +78,22 @@ const MainPage = () => {
 
             <div className="row">
                 <div className="col-10 col-m-10 p-2 mx-auto">
+                   <p className="color-white font-small">Operation: <b><i>{ mode ?? "Waiting" }</i></b></p>
+                </div>
+            </div>
+
+            <div className="row">
+                <div className="col-10 col-m-10 p-2 mx-auto">
                     {
                         imageData !== undefined 
                             ? (
                                 <Canvas 
                                     imageData = { imageData } 
                                     dataAreas = { dataAreas ?? [] }
+                                    editedDataArea = { editedDataArea }
                                     sendDataArea = { handleDataAreas }
                                     handleCanvasSize = { handleCanvasSize }
+                                    handleMode = { handleMode }
                                 />
                             )
                             : <Box text="Waiting for image" backgroundColor="rgba(116, 185, 255, 0.4)" borderColor="rgba(116, 185, 255, 0.4)"/>
@@ -99,6 +119,7 @@ const MainPage = () => {
                         dataAreas = { dataAreas }
                         updateDataAreas = { updateDataAreas }
                         deleteDataAreaFromDataAreas = { deleteDataAreaFromDataAreas }
+                        editDataArea = { editDataArea }
                     />
                 </div>
             </div>

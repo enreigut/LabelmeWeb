@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-import { calculateCentroidOfPolygon, calculateDistanceBetweenPoints, calculateRelativePoint } from "../../utils/math";
+import { calculateCentroidOfPolygon, calculateDistanceBetweenPoints } from "../../utils/math";
 import { drawCircle, drawLine, drawPolygon, drawPolygonControls, drawText, generateRandomColor } from "../../utils/draw";
 import {v4 as uuidv4} from 'uuid'
 
@@ -13,8 +13,10 @@ import { Size } from "../../interfaces/size";
 interface ImageCanvasProps {
     imageData: ImageData | undefined;
     dataAreas: Array<DataArea>;
+    editedDataArea: DataArea | undefined;
     sendDataArea: (dataAreas: Array<DataArea>) => void;
     handleCanvasSize: (canvasSize: Size<number>) => void;
+    handleMode: (mode: string) => void;
 }; 
 
 const Canvas = ( props: ImageCanvasProps ) => {
@@ -38,6 +40,8 @@ const Canvas = ( props: ImageCanvasProps ) => {
     // Modes
     const [isDrawing, setIsDrawing] = useState<boolean>(false);
     const [isEditing, setIsEditing] = useState<boolean>(false);
+    const [isDragging, setIsDragging] = useState<boolean>(false);
+    const [draggingIndex, setDraggingIndex] = useState<number | undefined>(undefined);
     
     const [points, setPoints] = useState<Array<Point>>([]);
     // const [dataAreas, setDataAreas] = useState<Array<DataArea>>([]);
@@ -67,10 +71,13 @@ const Canvas = ( props: ImageCanvasProps ) => {
                 };
     
                 if (!isDrawing) {
-                    setIsDrawing(true);
+                    if (!isEditing) {
+                        setIsDrawing(true);
+                        props.handleMode("Drawing");
+                    }
                 }
     
-                if (!clicked) {
+                if (!clicked && !isEditing) {
                     setClicked(true);
     
                     let pointToSet: Point = cursor;
@@ -88,6 +95,8 @@ const Canvas = ( props: ImageCanvasProps ) => {
                     // meaning, we are entering condition from above, means we did close the polygon
                     if (pointToSet !== cursor) {
                         setIsDrawing(false);
+                        props.handleMode("Waiting");
+
                         const polygon: Polygon = {points: points};
                         props.sendDataArea([...props.dataAreas, {
                             id: uuidv4(),
@@ -107,6 +116,8 @@ const Canvas = ( props: ImageCanvasProps ) => {
                             setPoints([...points, pointToSet]);
                         }
                     }
+                } else if (isEditing && !clicked) {
+                    setClicked(true);
                 }
             }   
         }
@@ -138,6 +149,8 @@ const Canvas = ( props: ImageCanvasProps ) => {
 
     const handleMouseUp = () => {
         setClicked(false);
+        setIsDragging(false);
+        setDraggingIndex(undefined);
     };
     
     // Function that renders what should be seen in the canvas
@@ -176,6 +189,10 @@ const Canvas = ( props: ImageCanvasProps ) => {
         // Draw current drawing which is stored in points state
         if (isDrawing) {
             draw(ctx, canvasRef, points);
+        } else if (isEditing) {
+            if (props.editedDataArea) {
+                drawEditingDataArea(ctx, canvasRef, props.editedDataArea);
+            }
         }
     }
 
@@ -210,6 +227,45 @@ const Canvas = ( props: ImageCanvasProps ) => {
                     drawLine(ctx, { start: points[idx - 1], end: points[idx]}, "black", canvasSize)
                 } else {
                     drawLine(ctx, { start: points[points.length - 1], end: cursorPos}, "black", canvasSize)
+                }
+            }
+        });
+    }
+
+    const drawEditingDataArea = (
+        ctx: CanvasRenderingContext2D,
+        canvasRef: HTMLCanvasElement,
+        dataArea: DataArea
+    ) => {
+        const canvasSize: Size<number> = {
+            width: canvasRef.width,
+            height: canvasRef.height
+        };
+        
+        dataArea.polygon.points.forEach((point, idx) => {
+            // If cursor is close to X threshold, render point differently to tell user that the loop will close and make a polygon on that point
+            // Logic is limited to allow only frist point to be the one that can close the polygon
+            // Also, I want to avoid user setting points to close to each other, so not allowing to put a point next to X distance of another point
+            // that is not the first one
+            if (cursorPos) {
+                // Render vertices
+                const distanceFromCursorToPoint = calculateDistanceBetweenPoints(point, cursorPos, {width: canvasRef.width, height: canvasRef.height });
+                if (distanceFromCursorToPoint <= 10 && clicked && !isDragging) {
+                    setIsDragging(true);
+                    setDraggingIndex(idx);
+                } else if (distanceFromCursorToPoint <= 10) {
+                    drawCircle(ctx, point, "yellow", canvasSize);
+                } else {
+                    drawCircle(ctx, point, "red", canvasSize);
+                }
+
+                if (isDragging) {
+                    if (draggingIndex === idx) {
+                        dataArea.polygon.points[draggingIndex] = cursorPos;
+                        drawCircle(ctx, point, "yellow", canvasSize);
+                    } else {
+                        drawCircle(ctx, point, "red", canvasSize);
+                    }
                 }
             }
         });
@@ -276,6 +332,13 @@ const Canvas = ( props: ImageCanvasProps ) => {
 
     useEffect(() => {
         setImageData(props.imageData);
+
+        if (props.editedDataArea) {
+            setIsDrawing(false);
+            setIsEditing(true);
+        } else {
+            setIsEditing(false);
+        }
     }, [props]);
 
     useEffect(() => {

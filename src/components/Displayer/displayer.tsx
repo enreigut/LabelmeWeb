@@ -1,10 +1,11 @@
 // Components
 import { DataArea } from "../../interfaces/dataArea";
-import DataAreaInfo from "../DataAreaInfo/DataAreaInfo";
+import DataAreaInfo from "../DataAreaInfo/dataAreaInfo";
 
 export interface DisplayerProps {
     dataAreas: Array<DataArea> | undefined;
     updateDataAreas: (dataArea: DataArea) => void;
+    editDataArea: (dataArea: DataArea) => void;
     deleteDataAreaFromDataAreas: (dataArea: DataArea) => void;
 }
 
@@ -17,7 +18,6 @@ const Displayer = (props: DisplayerProps) => {
     const deleteDataArea = (dataArea: DataArea) => {
         props.deleteDataAreaFromDataAreas(dataArea);
     }
-
 
     return (
         <div className="w-100">
@@ -61,6 +61,7 @@ const Displayer = (props: DisplayerProps) => {
                                                 className="mb-2" 
                                                 dataArea= { dataArea }
                                                 updateDataArea = { updateDataArea }
+                                                editDataArea = { props.editDataArea }
                                                 deleteDataArea = { deleteDataArea }
                                             />)
                                     })

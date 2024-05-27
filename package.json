@@ -2,6 +2,7 @@
   "name": "labeler",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
@@ -13,7 +14,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-scripts": "5.0.1",
-    "typescript": "^4.9.5",
+    "typescript": "4.9.5",
     "uuid": "^9.0.1",
     "web-vitals": "^2.1.4"
   },
@@ -21,7 +22,10 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "prepare": "husky install",
+    "lint": "eslint ./src",
+    "lint:fix": "eslint ./src --fix"
   },
   "eslintConfig": {
     "extends": [
@@ -42,7 +46,12 @@
     ]
   },
   "devDependencies": {
+    "@eslint/js": "^9.3.0",
     "@types/node": "^20.12.12",
-    "@types/uuid": "^9.0.8"
+    "@types/uuid": "^9.0.8",
+    "eslint": "^8.57.0",
+    "husky": "^8.0.0",
+    "typescript": "4.9.5",
+    "typescript-eslint": "^7.10.0"
   }
 }

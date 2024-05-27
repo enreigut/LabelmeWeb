@@ -3,7 +3,7 @@ import { changeOpcaityFromColor, generateRandomColor } from "../../utils/draw";
 
 import { DataArea } from "../../interfaces/dataArea"
 
-import TooltipButton from "../TooltipButton/TooltipButton";
+import TooltipButton from "../TooltipButton/tooltipButton";
 
 export interface DataAreaInfoProps {
     className?: string;
@@ -11,6 +11,7 @@ export interface DataAreaInfoProps {
 
     // update method
     updateDataArea: (dataArea: DataArea) => void;
+    editDataArea: (dataArea: DataArea) => void;
     deleteDataArea: (dataArea: DataArea) => void;
 }
 
@@ -19,7 +20,7 @@ const DataAreaInfo = ( props: DataAreaInfoProps ) => {
     const [edit, setEdit] = useState<boolean>(false);
 
     return (
-        <div className={"row " + props.className ?? ""}>
+        <div className={["row", props.className].join(" ")}>
             <div className="col-12">
                 <div 
                     className="w-100 border-radius-5 p-4" 
@@ -57,6 +58,7 @@ const DataAreaInfo = ( props: DataAreaInfoProps ) => {
                                                 backgroundColor = "#54a0ff"
                                                 borderColor = "#2e86de"
                                                 fontColor="white"
+                                                disabled = { false }
                                                 onClick={() => {
                                                     props.dataArea.label = label;
                                                     props.updateDataArea(props.dataArea);
@@ -65,13 +67,15 @@ const DataAreaInfo = ( props: DataAreaInfoProps ) => {
                                             />
                                         </div>
                                     : 
-                                        <div className="">
+                                        <div>
                                             <TooltipButton 
                                                 text= "Edit"
                                                 backgroundColor = "#54a0ff"
                                                 borderColor = "#2e86de"
                                                 fontColor="white"
+                                                disabled = { false }
                                                 onClick={() => {
+                                                    props.editDataArea(props.dataArea);
                                                     setEdit(true);
                                                 }}
                                             />
@@ -84,6 +88,7 @@ const DataAreaInfo = ( props: DataAreaInfoProps ) => {
                                     backgroundColor = { props.dataArea.color }
                                     borderColor = { changeOpcaityFromColor(props.dataArea.color, 1) }
                                     fontColor = "white"
+                                    disabled = { false }
                                     onClick={() => {
                                         props.dataArea.color = generateRandomColor(0.5);
                                         props.updateDataArea(props.dataArea);
@@ -91,13 +96,18 @@ const DataAreaInfo = ( props: DataAreaInfoProps ) => {
                                 />
                             </div>    
                             
-                            <div className="">
+                            <div>
                                 <TooltipButton 
                                     text= "Delete"
                                     backgroundColor = "#ff6b6b"
                                     borderColor = "#ee5253"
-                                    fontColor="white"
-                                    onClick={() => { props.deleteDataArea(props.dataArea); } }
+                                    fontColor = "white"
+                                    disabled = { edit }
+                                    onClick={() => { 
+                                        if (!edit) {
+                                            props.deleteDataArea(props.dataArea); } 
+                                        }
+                                    }
                                 />
                             </div>
                         </div>

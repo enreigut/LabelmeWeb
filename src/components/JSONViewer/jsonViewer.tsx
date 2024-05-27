@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import TooltipButton from "../TooltipButton/TooltipButton";
+import TooltipButton from "../TooltipButton/tooltipButton";
 
 interface RenderTypeProps {
     theme: Theme,
     objKey: string;
-    objValue: any;
+    objValue: object;
     traillingComma: boolean;
 };
 
@@ -123,7 +123,7 @@ const renderKey = ( props: RenderKeyProps ) => {
 interface RenderArrayProps {
     theme: Theme;
     objKey: string;
-    objValue: Array<any>;
+    objValue: Array<object>;
     traillingComma: boolean;
 };
 
@@ -178,7 +178,7 @@ const RenderArray = (props: RenderArrayProps) => {
 interface RenderObjectProps {
     theme: Theme;
     objKey: string;
-    objValue: any | null;
+    objValue: object | null;
     traillingComma: boolean;
 };
 
@@ -222,7 +222,12 @@ const RenderObject = (props: RenderObjectProps) => {
                     <div className="pl-4 border-left-1 ml-1" style={{ borderColor: props.theme.themeColor.infoColor }}>
                         { 
                             Object.keys(props.objValue).map((key, idx) => {
-                                return renderType({theme: props.theme, objKey: key, objValue: props.objValue[key], traillingComma: idx !== Object.keys(props.objValue).length - 1})
+                                return renderType({
+                                    theme: props.theme, 
+                                    objKey: key, 
+                                    objValue: (props.objValue as any)[key],
+                                    traillingComma: idx !== Object.keys((props.objValue as any)).length - 1
+                                })
                             }) 
                         }
                     </div>
@@ -316,7 +321,7 @@ export interface ThemeColor {
 
 export interface JSONViewerProps {
     className?: string;
-    object: any | undefined;
+    object: object | undefined;
 };
 
 const JSONViewer = ( props: JSONViewerProps ) => {
@@ -362,6 +367,7 @@ const JSONViewer = ( props: JSONViewerProps ) => {
                             borderColor = "#10ac84"
                             fontColor="white"
                             text="Download .json"
+                            disabled = { false }
                             onClick={() => {
                                 const href = window.URL.createObjectURL(new Blob([objectToString()], {type: 'json'}));
                                 const aElement = document.createElement("a");
@@ -380,6 +386,7 @@ const JSONViewer = ( props: JSONViewerProps ) => {
                                 backgroundColor = "#54a0ff"
                                 borderColor = "#2e86de"
                                 fontColor="white"
+                                disabled = { false }
                                 onClick={() => {
                                     navigator.clipboard.writeText(objectToString());
                                 }} 

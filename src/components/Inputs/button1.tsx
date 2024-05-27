@@ -1,5 +1,3 @@
-import { ChangeEventHandler } from "react";
-
 export interface Button1Props {
     text: string;
     backgroundColor?: string;
