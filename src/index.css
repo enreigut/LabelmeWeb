@@ -260,6 +260,7 @@ p                       { font-family: 'Open Sans';}
 /* Cursor */
 .cursor-pointer         { cursor: pointer; }
 .cursor-grab            { cursor: grab; }
+.cursor-not-allowed     { cursor: not-allowed; }
 
 /* Line breaks */
 .line-break-anywhere    { line-break: anywhere; }

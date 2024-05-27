@@ -1,7 +1,8 @@
+import { Labelme } from "../../interfaces/labelme";
 import JSONViewer from "../JSONViewer/jsonViewer";
 
 export interface ExporterProps {
-    dataToExport: any;
+    dataToExport: Labelme | undefined;
 }
 
 const Exporter = (props: ExporterProps) => {

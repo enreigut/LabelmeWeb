@@ -7,8 +7,8 @@ import { DataArea } from "../../interfaces/dataArea";
 import { Labelme } from "../../interfaces/labelme";
 
 import Box from "../Box/box";
-import Submit1 from "../Inputs/Submit1";
-import Button1 from "../Inputs/Button1";
+import Submit1 from "../Inputs/submit1";
+import Button1 from "../Inputs/button1";
 
 export interface LoaderProps {
     dataAreas: Array<DataArea> | undefined;
@@ -51,6 +51,7 @@ const Loader = (props: LoaderProps) => {
                 })
             })
             .catch((err) => {
+                console.error(err);
                 setError(true);
                 setErrorMessage("Failed to load image. Are you sure submitted file was an image?");
             });
@@ -71,6 +72,7 @@ const Loader = (props: LoaderProps) => {
             };
             
             img.onerror = (err) => {
+                console.error(err);
                 reject(new Error(`Failed to load image`));
                 setError(true);
                 setErrorMessage("Failed to load image. Are you sure submitted file was an image?");
@@ -103,10 +105,13 @@ const Loader = (props: LoaderProps) => {
 
             filaReader.onload = (e) => {
                 if (e.target) {
-                    const fileContent = e.target?.result;
-                    const toJson: Labelme = JSON.parse(fileContent?.toString()!);
-                    const dataAreas: Array<DataArea> = mapLabelmeToDatashare(toJson, props.canvasSize ?? defaultImageSize);
-                    props.loadDataAreas(dataAreas);
+                    const fileContent = e.target.result;
+
+                    if (fileContent) {
+                        const toJson: Labelme = JSON.parse(fileContent.toString()!);
+                        const dataAreas: Array<DataArea> = mapLabelmeToDatashare(toJson, props.canvasSize ?? defaultImageSize);
+                        props.loadDataAreas(dataAreas);
+                    }
                 }
             }
             

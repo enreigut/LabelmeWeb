@@ -7,7 +7,7 @@ import { calculateRelativePoint } from "./math";
 
 // Function that generates a random rgb(a) color, a being opacity is set manually
 export const generateRandomColor = (opacity: number): string => {
-    var o = Math.round, r = Math.random, s = 255;
+    const o = Math.round, r = Math.random, s = 255;
     return `rgba(${o(r()*s)}, ${o(r()*s)}, ${o(r()*s)}, ${opacity})`; 
 };
 
