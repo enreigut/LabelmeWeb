@@ -8,6 +8,7 @@ import TooltipButton from "../TooltipButton/tooltipButton";
 export interface DataAreaInfoProps {
     className?: string;
     dataArea: DataArea;
+    editedDataArea: DataArea | undefined;
 
     // update method
     updateDataArea: (dataArea: DataArea) => void;
@@ -73,7 +74,7 @@ const DataAreaInfo = ( props: DataAreaInfoProps ) => {
                                                 backgroundColor = "#54a0ff"
                                                 borderColor = "#2e86de"
                                                 fontColor="white"
-                                                disabled = { false }
+                                                disabled = { props.editedDataArea !== undefined && (props.editedDataArea.id !== props.dataArea.id)}
                                                 onClick={() => {
                                                     props.editDataArea(props.dataArea);
                                                     setEdit(true);
@@ -104,9 +105,7 @@ const DataAreaInfo = ( props: DataAreaInfoProps ) => {
                                     fontColor = "white"
                                     disabled = { edit }
                                     onClick={() => { 
-                                        if (!edit) {
-                                            props.deleteDataArea(props.dataArea); } 
-                                        }
+                                        props.deleteDataArea(props.dataArea); } 
                                     }
                                 />
                             </div>

@@ -17,7 +17,11 @@ const TooltipButton = (props: TooltipButtonProps) => {
                 borderColor: props.disabled ? "#3d3d3d" : props.borderColor ?? "#3d3d3d",
                 color: props.fontColor ?? "#3d3d3d"
             }}
-            onClick={ props.onClick }
+            onClick={() => {
+                if(!props.disabled) {
+                    props.onClick();
+                }
+            }}
         >
             { props.text }
         </button>

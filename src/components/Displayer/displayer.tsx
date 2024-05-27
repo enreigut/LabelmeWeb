@@ -4,20 +4,14 @@ import DataAreaInfo from "../DataAreaInfo/dataAreaInfo";
 
 export interface DisplayerProps {
     dataAreas: Array<DataArea> | undefined;
+    editedDataArea: DataArea | undefined;
+
     updateDataAreas: (dataArea: DataArea) => void;
     editDataArea: (dataArea: DataArea) => void;
     deleteDataAreaFromDataAreas: (dataArea: DataArea) => void;
 }
 
 const Displayer = (props: DisplayerProps) => {
-
-    const updateDataArea = (dataArea: DataArea) => {
-        props.updateDataAreas(dataArea);
-    }
-
-    const deleteDataArea = (dataArea: DataArea) => {
-        props.deleteDataAreaFromDataAreas(dataArea);
-    }
 
     return (
         <div className="w-100">
@@ -60,9 +54,10 @@ const Displayer = (props: DisplayerProps) => {
                                                 key={`data_area_${dataArea.label}_${idx}`} 
                                                 className="mb-2" 
                                                 dataArea= { dataArea }
-                                                updateDataArea = { updateDataArea }
+                                                editedDataArea = { props.editedDataArea }
+                                                updateDataArea = { props.updateDataAreas }
                                                 editDataArea = { props.editDataArea }
-                                                deleteDataArea = { deleteDataArea }
+                                                deleteDataArea = {  props.deleteDataAreaFromDataAreas }
                                             />)
                                     })
                                 }

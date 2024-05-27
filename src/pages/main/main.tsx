@@ -14,12 +14,12 @@ import Exporter from "../../components/Exporter/exporter";
 
 const MainPage = () => {
     // States
-    const [mode, setMode] = useState<string | undefined>(undefined);
-    const [editedDataArea, setEditedDataArea] = useState<DataArea | undefined>(undefined);
     const [canvasSize, setCanvasSize] = useState<Size<number> | undefined>(undefined);
     const [imageData, setImageData] = useState<ImageData | undefined>(undefined);
     const [dataAreas, setDataAreas] = useState<Array<DataArea> | undefined>([]);
+    const [editedDataArea, setEditedDataArea] = useState<DataArea | undefined>(undefined);
     const [dataToExport, setDataToExport] = useState<Labelme | undefined>(undefined);
+    const [mode, setMode] = useState<string | undefined>(undefined);
 
     const handleCanvasSize = (canvasSize: Size<number> | undefined) => {
         setCanvasSize(canvasSize);
@@ -117,6 +117,7 @@ const MainPage = () => {
                 <div className="col-10 col-m-10 p-2 mx-auto">
                     <Displayer 
                         dataAreas = { dataAreas }
+                        editedDataArea = { editedDataArea }
                         updateDataAreas = { updateDataAreas }
                         deleteDataAreaFromDataAreas = { deleteDataAreaFromDataAreas }
                         editDataArea = { editDataArea }

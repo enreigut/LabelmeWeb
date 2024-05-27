@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import TooltipButton from "../TooltipButton/tooltipButton";
 
 interface RenderTypeProps {
-    theme: Theme,
+    key: string;
+    theme: Theme;
     objKey: string;
     objValue: object;
     traillingComma: boolean;
@@ -13,6 +14,7 @@ const renderType = (props: RenderTypeProps) => {
         case "string": 
             return (
                 <RenderString
+                    key = { `${props.key}_string_${props.objValue}` }
                     theme = { props.theme } 
                     objKey = { props.objKey } 
                     objValue = { props.objValue }
@@ -21,6 +23,7 @@ const renderType = (props: RenderTypeProps) => {
         case "number": {
             return (
                 <RenderNumber 
+                    key = { `${props.key}_number_${props.objValue}` }
                     theme = { props.theme }
                     objKey = { props.objKey } 
                     objValue = { props.objValue }
@@ -31,6 +34,7 @@ const renderType = (props: RenderTypeProps) => {
             if (Array.isArray(props.objValue)) {
                 return (
                     <RenderArray 
+                        key = { props.key }
                         theme = { props.theme}
                         objKey = { props.objKey } 
                         objValue = { props.objValue }
@@ -39,6 +43,7 @@ const renderType = (props: RenderTypeProps) => {
             } else {
                 return (
                     <RenderObject 
+                        key = { props.key }
                         theme = { props.theme }
                         objKey = { props.objKey } 
                         objValue = { props.objValue }
@@ -156,7 +161,13 @@ const RenderArray = (props: RenderArrayProps) => {
                     <div className="pl-4 border-left-1 ml-1" style={{ borderColor: props.theme.themeColor.infoColor }}>
                         {
                             props.objValue.map((item, idx) => {
-                                return renderType({theme: props.theme, objKey: `${idx}`, objValue: item, traillingComma: idx !== props.objValue.length - 1})
+                                return renderType({
+                                    key: `array_${idx}}`,
+                                    theme: props.theme, 
+                                    objKey: `${idx}`, 
+                                    objValue: item, 
+                                    traillingComma: idx !== props.objValue.length - 1
+                                })
                             })
                         }
                     </div>
@@ -223,6 +234,7 @@ const RenderObject = (props: RenderObjectProps) => {
                         { 
                             Object.keys(props.objValue).map((key, idx) => {
                                 return renderType({
+                                    key: `object_${idx}`,
                                     theme: props.theme, 
                                     objKey: key, 
                                     objValue: (props.objValue as any)[key],
