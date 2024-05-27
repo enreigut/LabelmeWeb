@@ -280,6 +280,10 @@ p                       { font-family: 'Open Sans';}
 /* Transition */
 .transition-all-4       { transition: all, 0.4s }
 
+/* Hover */
+.opacity-0              { opacity: 0;}
+.hover-opacity-1:hover  { opacity: 1; }
+
 /* For mobile phones: */
 [class*="col-"]         { width: 100%; }
 

@@ -18,9 +18,17 @@ const Displayer = (props: DisplayerProps) => {
     return (
         <div className="w-100">
 
-            <div className="row mb-4">
+            <div className="row mb-2">
                 <div className="col-12">
                     <h2 className="color-white">Labels</h2>
+                </div>
+            </div>
+
+            <div className="row mb-4">
+                <div className="col-12">
+                    <p className="font-small color-white">
+                        <b>Special labels you can set:</b> <i>{ Object.keys(props.configuration).join(", ") }</i>
+                    </p>
                 </div>
             </div>
 

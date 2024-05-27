@@ -9,6 +9,9 @@ import { Labelme } from "../../interfaces/labelme";
 import Box from "../Box/box";
 import Submit1 from "../Inputs/submit1";
 import Button1 from "../Inputs/button1";
+import TooltipButton from "../TooltipButton/tooltipButton";
+import { FaFileArrowUp, FaFileExport, FaTrashCan, FaUpload } from "react-icons/fa6";
+import TooltipSubmit from "../TooltipSubmit/tooltipSubmit";
 
 export interface LoaderProps {
     dataAreas: Array<DataArea> | undefined;
@@ -130,12 +133,62 @@ const Loader = (props: LoaderProps) => {
     return (
         <div className="w-100">
             <div className="row mb-2">
-                <div className = "col-3">
-                    <Submit1
-                        text="Submit File"
-                        accept="image/*"
-                        onChange = { loadImage }
-                    />
+                <div className = "col-12 d-flex" style={{justifyContent: "space-between"}}>
+
+                    <div className="w-100 mr-2">
+                        <TooltipSubmit 
+                            text="Submit File"
+                            fontColor = "white"
+                            icon = { FaFileArrowUp }
+                            padding = "10px 20px"
+                            backgroundColor="#484F56"
+                            borderColor="#3d3d3d"
+                            disabled = { false }
+                            accept = "image/*"
+                            onChange={ loadImage } 
+                        />
+                    </div>
+
+                    <div className="w-100 mr-2">
+                        <TooltipSubmit 
+                            text="Load Labels"
+                            fontColor = "white"
+                            padding = "10px 20px"
+                            icon = { FaFileArrowUp }
+                            backgroundColor = "#1dd1a1"
+                            borderColor = "#10ac84"
+                            disabled = { imageData ? false : true }
+                            accept = ".json"
+                            onChange={ loadImage } 
+                        />
+                    </div>
+
+                    <div className="w-100 mr-2">
+                        <TooltipButton 
+                            text="Export Data"
+                            padding = "10px 20px"
+                            fontColor = "white"
+                            icon = { FaFileExport }
+                            backgroundColor="#54a0ff"
+                            borderColor="#2e86de"
+                            disabled = { props.dataAreas && props.dataAreas.length <= 0 ? true : false }
+                            onClick={exportDataAreas} 
+                        />
+                    </div>
+
+                   
+                        <TooltipButton 
+                            text="Delete Image"
+                            padding = "10px 20px"
+                            fontColor = "white"
+                            icon = { FaTrashCan }
+                            backgroundColor="#ff6b6b"
+                            borderColor="#ee5253"
+                            disabled={ imageData ? false : true }
+                            onClick={deleteImageData} 
+                        />
+ 
+
                 </div>
             </div>
 
@@ -150,33 +203,7 @@ const Loader = (props: LoaderProps) => {
                                         <Box 
                                             text={`Loaded image: ${imageData.name}`} 
                                             backgroundColor="#2e3440"
-                                        >
-                                            <div className="d-flex my-2">
-                                                <Submit1 
-                                                    text = "Load Labels"
-                                                    backgroundColor = "#1dd1a1"
-                                                    borderColor = "#10ac84"
-                                                    accept = ".json"
-                                                    onChange={ loadData }
-                                                />
-
-                                                <div className="mx-2">
-                                                    <Button1 
-                                                        text = "Export Data"
-                                                        backgroundColor = "#54a0ff"
-                                                        borderColor = "#2e86de"
-                                                        onClick={ exportDataAreas }
-                                                    />
-                                                </div>
-
-                                                <Button1 
-                                                    text = "Delete Image"
-                                                    backgroundColor = "#ff6b6b"
-                                                    borderColor = "#ee5253"
-                                                    onClick={ deleteImageData }
-                                                />
-                                            </div>
-                                        </Box>
+                                        />
                                     )
                                     : <></>
                         }

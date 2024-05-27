@@ -16,7 +16,18 @@ import { overrideDefaultConfigWithReservedKeywordConfig } from "../../utils/draw
 const MainPage = () => {
     // Configuration
     const reservedKeywords: ReservedKeyword = {
-        "blackout_area": { polygonColor: "rgba(0,0,0,1)" }
+        "blackout_area": { 
+            polygonColor: "rgba(0,0,0,1)", 
+            description: "Reserved keyword that blacks out the polygon. Color cannot be modified"
+        },
+        "ginger": { 
+            polygonColor: "rgba(235, 47, 6, 1.0)", 
+            description: "Reserved keyword that sets the color to an intense tomato red. Color cannot be modified"
+        },
+        "betis": { 
+            polygonColor: "rgba(46, 204, 113, 1.0)", 
+            description: "Reserved keyword that sets the color green. Color cannot be modified"
+        }
     };
 
     // States

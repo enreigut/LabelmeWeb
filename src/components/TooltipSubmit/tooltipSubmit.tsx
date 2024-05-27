@@ -1,9 +1,9 @@
 import { IconType } from "react-icons";
 import IconWrapper from "../IconWrapper/iconWrapper";
 import Tooltip from "../Tooltip/tooltip";
-import { useEffect, useState } from "react";
+import { CSSProperties, ChangeEventHandler, useEffect, useState } from "react";
 
-export interface TooltipButtonProps {
+export interface TooltipSubmitProps {
     text: string;
     disabled: boolean;
     padding?: string;
@@ -11,10 +11,11 @@ export interface TooltipButtonProps {
     borderColor?: string;
     fontColor?: string;
     icon?: IconType
-    onClick: () => void;
+    accept?: string;
+    onChange: ChangeEventHandler<HTMLInputElement>;
 }
 
-const TooltipButton = (props: TooltipButtonProps) => {
+const TooltipSubmit = (props: TooltipSubmitProps) => {
     // Configuration
     const breakpointPx: number = 760;
 
@@ -53,28 +54,37 @@ const TooltipButton = (props: TooltipButtonProps) => {
             top = { 40 }
             text = { tooltipText }
         >
-            <button 
-                className = {`font-opensans font-small border-2 border-radius-5 transition-all-4 ${ props.disabled ? 'cursor-not-allowed' : 'cursor-pointer'} font-bold w-100`}
-                style = {{
+
+            <label 
+                className = {`font-opensans d-block font-bold font-small border-2 border-radius-5 transition-all-4 ${ props.disabled ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                style={{
                     padding: props.padding ?? "5px 10px",
-                    backgroundColor: props.disabled ? "#9b9b9b" : props.backgroundColor ?? "#9b9b9b",
-                    borderColor: props.disabled ? "#7f8c8d" : props.borderColor ?? "#3d3d3d",
-                    color: props.fontColor ?? "#3d3d3d"
-                }}
-                onClick={() => {
-                    if(!props.disabled) {
-                        props.onClick();
-                    }
+                    backgroundColor: props.disabled ? "#9b9b9b" : props.backgroundColor ?? "#484F56",
+                    borderColor: props.disabled ? "#7f8c8d" : props.borderColor ?? "#3d3d3d"
                 }}
             >
-                <div className="d-flex">
+                <input
+                    className="d-none"
+                    type="file"
+                    onChange={(e) => {
+                        if (!props.disabled) {
+                            props.onChange(e)
+                        } 
+                    }} 
+                    accept = { props.accept }
+                />
+
+                <div className="d-flex color-white">
                     {
-                        props.icon && showIcon ? <IconWrapper classname = "m-auto" style = {{ padding: "5px 10px"}} icon = { props.icon } /> : (<p className="m-auto text-center"> { props.text } </p>)
+                        props.icon && showIcon 
+                            ? <IconWrapper classname = "m-auto" style = {{ padding: "5px 10px"}} icon = { props.icon } /> 
+                            : (<p className="m-auto text-center"> { props.text } </p>)
                     }
                 </div>
-            </button>
+            </label>
+
         </Tooltip>
     )
 };
 
-export default TooltipButton;
+export default TooltipSubmit;

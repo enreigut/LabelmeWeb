@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import TooltipButton from "../TooltipButton/tooltipButton";
+import { FaClipboard, FaFileArrowDown } from "react-icons/fa6";
 
 interface RenderTypeProps {
     key: string;
@@ -362,62 +363,73 @@ const JSONViewer = ( props: JSONViewerProps ) => {
     }
 
     return (
-        <div 
-            className = {[props.className, "p-4 border-radius-5 o-x-auto"].join(" ")}
-            style={{
-                fontFamily: "monospace",
-                lineHeight: "1.4",
-                fontSize: "13px",
-                backgroundColor: "#2e3440"
-            }}
-        >
-            <div className="row">
+        <div>
+
+            <div className="row mb-2">
                 <div className="col-12">
                     <div className="d-flex">
-                        <TooltipButton
-                            backgroundColor = "#1dd1a1"
-                            borderColor = "#10ac84"
-                            fontColor="white"
-                            text="Download .json"
-                            disabled = { false }
-                            onClick={() => {
-                                const href = window.URL.createObjectURL(new Blob([objectToString()], {type: 'json'}));
-                                const aElement = document.createElement("a");
-                                aElement.setAttribute("download", "data.json");
-                                aElement.href = href;
-                                aElement.setAttribute('target', '_blank');
-                                aElement.click();
-                                window.URL.revokeObjectURL(href);
-                                
-                            }} 
-                        />
+                        
+                        <div className="mr-2">
+                            <TooltipButton
+                                backgroundColor = "#1dd1a1"
+                                borderColor = "#10ac84"
+                                fontColor="white"
+                                text="Download .json"
+                                icon = { FaFileArrowDown }
+                                disabled = { false }
+                                onClick={() => {
+                                    const href = window.URL.createObjectURL(new Blob([objectToString()], {type: 'json'}));
+                                    const aElement = document.createElement("a");
+                                    aElement.setAttribute("download", "data.json");
+                                    aElement.href = href;
+                                    aElement.setAttribute('target', '_blank');
+                                    aElement.click();
+                                    window.URL.revokeObjectURL(href);
+                                    
+                                }} 
+                            />
+                        </div>
 
-                        <div className="ml-2">
+                        <div>
                             <TooltipButton
                                 text="Copy to clipboard"
                                 backgroundColor = "#54a0ff"
                                 borderColor = "#2e86de"
-                                fontColor="white"
+                                fontColor = "white"
+                                icon = { FaClipboard }
                                 disabled = { false }
                                 onClick={() => {
                                     navigator.clipboard.writeText(objectToString());
                                 }} 
                             />
                         </div>
+
                     </div>
                 </div>
             </div>
 
-            <div className="py-4">
-                {
-                    props.object !== undefined
-                    ? (
-                        <RenderObject objKey="" objValue= { props.object } theme={ defaultTheme } traillingComma = { false }/>
-                    )
-                    : <></>
-                }
+            <div 
+                className = {[props.className, "p-4 border-radius-5 o-x-auto"].join(" ")}
+                style={{
+                    fontFamily: "monospace",
+                    lineHeight: "1.4",
+                    fontSize: "13px",
+                    backgroundColor: "#2e3440"
+                }}
+            >
+        
+                <div className="">
+                    {
+                        props.object !== undefined
+                        ? (
+                            <RenderObject objKey="" objValue= { props.object } theme={ defaultTheme } traillingComma = { false }/>
+                        )
+                        : <></>
+                    }
+                </div>
             </div>
-        </div>
+
+        </div>     
     )
 };
 

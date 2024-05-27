@@ -1,7 +1,7 @@
 import { DataArea } from "../interfaces/dataArea";
 import { Point } from "../interfaces/point";
 import { Polygon } from "../interfaces/polygon";
-import { ReservedKeyword } from "../interfaces/reservedKeyword";
+import { ReservedKeyword, ReservedKeywordConfiguration } from "../interfaces/reservedKeyword";
 import { Size } from "../interfaces/size";
 import { Vector2 } from "../interfaces/vector2";
 
@@ -150,5 +150,13 @@ export const hasOverridingConfig = (dataArea: DataArea, configuration: ReservedK
 export const overrideDefaultConfigWithReservedKeywordConfig = (dataArea: DataArea, configuration: ReservedKeyword) => {
     if (hasOverridingConfig(dataArea, configuration)) {
         dataArea.color = configuration[dataArea.label].polygonColor;
+    }
+};
+
+export const getOverridingConfiguration = (dataArea: DataArea, configuration: ReservedKeyword): ReservedKeywordConfiguration | undefined => {
+    if (hasOverridingConfig(dataArea, configuration)) {
+       return configuration[dataArea.label];
+    } else {
+        return undefined;
     }
 };
