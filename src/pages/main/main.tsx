@@ -10,9 +10,15 @@ import Displayer from "../../components/Displayer/displayer";
 import Canvas from "../../components/Canvas/canvas";
 import Box from "../../components/Box/box";
 import Exporter from "../../components/Exporter/exporter";
-
+import { ReservedKeyword } from "../../interfaces/reservedKeyword";
+import { overrideDefaultConfigWithReservedKeywordConfig } from "../../utils/draw";
 
 const MainPage = () => {
+    // Configuration
+    const reservedKeywords: ReservedKeyword = {
+        "blackout_area": { polygonColor: "rgba(0,0,0,1)" }
+    };
+
     // States
     const [canvasSize, setCanvasSize] = useState<Size<number> | undefined>(undefined);
     const [imageData, setImageData] = useState<ImageData | undefined>(undefined);
@@ -43,7 +49,13 @@ const MainPage = () => {
 
     const updateDataAreas = (dataArea: DataArea) => {
         if (dataAreas !== undefined && dataAreas.length > 0) {
+            
+            if (dataAreas) {
+                dataAreas.forEach((dataArea) => overrideDefaultConfigWithReservedKeywordConfig(dataArea, reservedKeywords));
+            }
+
             const idxOfTargetDataArea = dataAreas.findIndex(x => x.id === dataArea.id);
+
             if (idxOfTargetDataArea !== -1) {
                 dataAreas[idxOfTargetDataArea] = dataArea;
                 setMode("Waiting")
@@ -118,6 +130,7 @@ const MainPage = () => {
                     <Displayer 
                         dataAreas = { dataAreas }
                         editedDataArea = { editedDataArea }
+                        configuration = { reservedKeywords }
                         updateDataAreas = { updateDataAreas }
                         deleteDataAreaFromDataAreas = { deleteDataAreaFromDataAreas }
                         editDataArea = { editDataArea }

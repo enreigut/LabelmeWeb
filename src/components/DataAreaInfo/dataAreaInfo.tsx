@@ -1,13 +1,15 @@
 import { useState } from "react";
-import { changeOpcaityFromColor, generateRandomColor } from "../../utils/draw";
+import { changeOpcaityFromColor, generateRandomColor, hasOverridingConfig } from "../../utils/draw";
 
 import { DataArea } from "../../interfaces/dataArea"
 
 import TooltipButton from "../TooltipButton/tooltipButton";
+import { ReservedKeyword } from "../../interfaces/reservedKeyword";
 
 export interface DataAreaInfoProps {
     className?: string;
     dataArea: DataArea;
+    configuration: ReservedKeyword;
     editedDataArea: DataArea | undefined;
 
     // update method
@@ -44,7 +46,13 @@ const DataAreaInfo = ( props: DataAreaInfoProps ) => {
                                             placeholder = { props.dataArea.label } 
                                         />
                                     )
-                                    : <b className="ml-2"> { props.dataArea.label }</b>
+                                    : <b className="ml-2"> 
+                                        { 
+                                            hasOverridingConfig(props.dataArea, props.configuration)
+                                            ? (<i> { props.dataArea.label } </i>)
+                                            : props.dataArea.label 
+                                        }
+                                    </b>
                                 }
                             </p>
                         }
@@ -89,7 +97,7 @@ const DataAreaInfo = ( props: DataAreaInfoProps ) => {
                                     backgroundColor = { props.dataArea.color }
                                     borderColor = { changeOpcaityFromColor(props.dataArea.color, 1) }
                                     fontColor = "white"
-                                    disabled = { false }
+                                    disabled = { hasOverridingConfig(props.dataArea, props.configuration) }
                                     onClick={() => {
                                         props.dataArea.color = generateRandomColor(0.5);
                                         props.updateDataArea(props.dataArea);

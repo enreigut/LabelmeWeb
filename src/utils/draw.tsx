@@ -1,5 +1,7 @@
+import { DataArea } from "../interfaces/dataArea";
 import { Point } from "../interfaces/point";
 import { Polygon } from "../interfaces/polygon";
+import { ReservedKeyword } from "../interfaces/reservedKeyword";
 import { Size } from "../interfaces/size";
 import { Vector2 } from "../interfaces/vector2";
 
@@ -129,11 +131,24 @@ export const drawPolygonControls = (ctx: CanvasRenderingContext2D, polygon: Poly
 
 // Functon to draw text. We still need canvasSize to make it relative
 // font size is in px
-export const drawText = (ctx: CanvasRenderingContext2D, text: string, point: Point, fontSize: number, font: string, color: string, canvasSize: Size<number>) =>{
+export const drawText = (ctx: CanvasRenderingContext2D, text: string, point: Point, fontSize: number, font: string, color: string, canvasSize: Size<number>) => {
     const scaledPoint = calculateRelativePoint(point, canvasSize)
 
     ctx.font = `${fontSize}px ${font}`;
     ctx.fillStyle = `${color}`;
     ctx.textAlign = 'center';
     ctx.fillText(text, scaledPoint.x, scaledPoint.y);
+};
+
+// Function that checks if polygon must override default config by reserverd keyword configuration
+export const hasOverridingConfig = (dataArea: DataArea, configuration: ReservedKeyword): boolean => {
+    return Object.keys(configuration).includes(dataArea.label);
+}
+
+// Function that coverrides default config by given configuration
+// For the time being is just the color
+export const overrideDefaultConfigWithReservedKeywordConfig = (dataArea: DataArea, configuration: ReservedKeyword) => {
+    if (hasOverridingConfig(dataArea, configuration)) {
+        dataArea.color = configuration[dataArea.label].polygonColor;
+    }
 };

@@ -1,10 +1,12 @@
 // Components
 import { DataArea } from "../../interfaces/dataArea";
+import { ReservedKeyword } from "../../interfaces/reservedKeyword";
 import DataAreaInfo from "../DataAreaInfo/dataAreaInfo";
 
 export interface DisplayerProps {
     dataAreas: Array<DataArea> | undefined;
     editedDataArea: DataArea | undefined;
+    configuration: ReservedKeyword;
 
     updateDataAreas: (dataArea: DataArea) => void;
     editDataArea: (dataArea: DataArea) => void;
@@ -51,9 +53,10 @@ const Displayer = (props: DisplayerProps) => {
                                     props.dataAreas?.map((dataArea, idx) => {
                                         return (
                                             <DataAreaInfo 
-                                                key={`data_area_${dataArea.label}_${idx}`} 
-                                                className="mb-2" 
-                                                dataArea= { dataArea }
+                                                key = {`data_area_${dataArea.label}_${idx}`} 
+                                                className ="mb-2" 
+                                                dataArea = { dataArea }
+                                                configuration = { props.configuration }
                                                 editedDataArea = { props.editedDataArea }
                                                 updateDataArea = { props.updateDataAreas }
                                                 editDataArea = { props.editDataArea }
