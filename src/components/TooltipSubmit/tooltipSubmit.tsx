@@ -10,6 +10,7 @@ export interface TooltipSubmitProps {
     backgroundColor?: string;
     borderColor?: string;
     fontColor?: string;
+    hoverColor?: string;
     icon?: IconType
     accept?: string;
     onChange: ChangeEventHandler<HTMLInputElement>;
@@ -20,6 +21,7 @@ const TooltipSubmit = (props: TooltipSubmitProps) => {
     const breakpointPx: number = 760;
 
     // State
+    const [isHover, setIsHover] = useState<boolean>(false);
     const [showIcon, setShowIcon] = useState<boolean>(false);
     const [tooltipText, setToolTipText] = useState<string | undefined>(undefined);
 
@@ -59,9 +61,11 @@ const TooltipSubmit = (props: TooltipSubmitProps) => {
                 className = {`font-opensans d-block font-bold font-small border-2 border-radius-5 transition-all-4 ${ props.disabled ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                 style={{
                     padding: props.padding ?? "5px 10px",
-                    backgroundColor: props.disabled ? "#9b9b9b" : props.backgroundColor ?? "#484F56",
+                    backgroundColor: props.disabled ? "#9b9b9b" : isHover ? props.hoverColor ?? "white" : props.backgroundColor ?? "#484F56",
                     borderColor: props.disabled ? "#7f8c8d" : props.borderColor ?? "#3d3d3d"
                 }}
+                onMouseEnter = {() => { setIsHover(true); }}
+                onMouseLeave = {() => { setIsHover(false); }}
             >
                 <input
                     className="d-none"

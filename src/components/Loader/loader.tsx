@@ -143,6 +143,7 @@ const Loader = (props: LoaderProps) => {
                             padding = "10px 20px"
                             backgroundColor="#484F56"
                             borderColor="#3d3d3d"
+                            hoverColor = "#5d5d5d"
                             disabled = { false }
                             accept = "image/*"
                             onChange={ loadImage } 
@@ -157,6 +158,7 @@ const Loader = (props: LoaderProps) => {
                             icon = { FaFileArrowUp }
                             backgroundColor = "#1dd1a1"
                             borderColor = "#10ac84"
+                            hoverColor = "#55efc4"
                             disabled = { imageData ? false : true }
                             accept = ".json"
                             onChange={ loadData } 
@@ -169,25 +171,25 @@ const Loader = (props: LoaderProps) => {
                             padding = "10px 20px"
                             fontColor = "white"
                             icon = { FaFileExport }
-                            backgroundColor="#54a0ff"
-                            borderColor="#2e86de"
+                            backgroundColor = "#54a0ff"
+                            borderColor = "#2e86de"
+                            hoverColor = "#74b9ff"
                             disabled = { props.dataAreas && props.dataAreas.length <= 0 ? true : false }
                             onClick={exportDataAreas} 
                         />
                     </div>
 
-                   
-                        <TooltipButton 
-                            text="Delete Image"
-                            padding = "10px 20px"
-                            fontColor = "white"
-                            icon = { FaTrashCan }
-                            backgroundColor="#ff6b6b"
-                            borderColor="#ee5253"
-                            disabled={ imageData ? false : true }
-                            onClick={deleteImageData} 
-                        />
- 
+                    <TooltipButton 
+                        text="Delete Image"
+                        padding = "10px 20px"
+                        fontColor = "white"
+                        icon = { FaTrashCan }
+                        backgroundColor="#ff6b6b"
+                        borderColor="#ee5253"
+                        hoverColor = "#fc5c65"
+                        disabled={ imageData ? false : true }
+                        onClick={deleteImageData} 
+                    /> 
 
                 </div>
             </div>

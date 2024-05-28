@@ -9,6 +9,7 @@ export interface TooltipButtonProps {
     padding?: string;
     backgroundColor?: string;
     borderColor?: string;
+    hoverColor?: string;
     fontColor?: string;
     icon?: IconType
     onClick: () => void;
@@ -19,6 +20,7 @@ const TooltipButton = (props: TooltipButtonProps) => {
     const breakpointPx: number = 760;
 
     // State
+    const [isHover, setIsHover] = useState<boolean>(false);
     const [showIcon, setShowIcon] = useState<boolean>(false);
     const [tooltipText, setToolTipText] = useState<string | undefined>(undefined);
 
@@ -57,10 +59,12 @@ const TooltipButton = (props: TooltipButtonProps) => {
                 className = {`font-opensans font-small border-2 border-radius-5 transition-all-4 ${ props.disabled ? 'cursor-not-allowed' : 'cursor-pointer'} font-bold w-100`}
                 style = {{
                     padding: props.padding ?? "5px 10px",
-                    backgroundColor: props.disabled ? "#9b9b9b" : props.backgroundColor ?? "#9b9b9b",
+                    backgroundColor: props.disabled ? "#9b9b9b" : isHover ? props.hoverColor ?? "white" : props.backgroundColor ?? "#9b9b9b",
                     borderColor: props.disabled ? "#7f8c8d" : props.borderColor ?? "#3d3d3d",
                     color: props.fontColor ?? "#3d3d3d"
                 }}
+                onMouseEnter = {() => { setIsHover(true); }}
+                onMouseLeave = {() => { setIsHover(false); }}
                 onClick={() => {
                     if(!props.disabled) {
                         props.onClick();

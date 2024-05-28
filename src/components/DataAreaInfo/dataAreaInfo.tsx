@@ -94,6 +94,7 @@ const DataAreaInfo = ( props: DataAreaInfoProps ) => {
                                     backgroundColor = "#54a0ff"
                                     borderColor = "#2e86de"
                                     fontColor="white"
+                                    hoverColor = "#74b9ff"
                                     icon = { edit ? FaFloppyDisk : FaPencil }
                                     disabled = { 
                                         edit
@@ -119,6 +120,7 @@ const DataAreaInfo = ( props: DataAreaInfoProps ) => {
                                     backgroundColor = { props.dataArea.color }
                                     borderColor = { changeOpcaityFromColor(props.dataArea.color, 1) }
                                     fontColor = "white"
+                                    hoverColor = { changeOpcaityFromColor(props.dataArea.color, 0.8) }
                                     icon = { FaPaintRoller }
                                     disabled = { hasOverridingConfig(props.dataArea, props.configuration) }
                                     onClick={() => {
@@ -134,6 +136,7 @@ const DataAreaInfo = ( props: DataAreaInfoProps ) => {
                                     backgroundColor = "#ff6b6b"
                                     borderColor = "#ee5253"
                                     fontColor = "white"
+                                    hoverColor = "#fc5c65"
                                     icon = { FaTrashCan }
                                     disabled = { edit }
                                     onClick={() => { 
