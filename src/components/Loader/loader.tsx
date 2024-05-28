@@ -159,7 +159,7 @@ const Loader = (props: LoaderProps) => {
                             borderColor = "#10ac84"
                             disabled = { imageData ? false : true }
                             accept = ".json"
-                            onChange={ loadImage } 
+                            onChange={ loadData } 
                         />
                     </div>
 
