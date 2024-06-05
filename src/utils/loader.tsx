@@ -9,11 +9,11 @@ import { Size } from "../interfaces/size";
 import { ReservedKeyword } from "../interfaces/reservedKeyword";
 
 // Function for when we export the data. It just maps from our custom data type to something that is understandable
-export const mapDataAreaToShape = (dataArea: DataArea, imageData: ImageData): Shape => {
+export const mapDataAreaToShape = (dataArea: DataArea, imageData: ImageData, newDesiredSize?: Size<number>): Shape => {
     return {
         label: dataArea.label,
         points: dataArea.polygon.points.map((point) => {
-            const p = calculateRelativePoint(point, imageData.size ?? { width: 1280, height: 720 })
+            const p = calculateRelativePoint(point, newDesiredSize ?? (imageData.size ?? { width: 1280, height: 720 }))
             return [p.x, p.y]
         }),
         group_id: null,

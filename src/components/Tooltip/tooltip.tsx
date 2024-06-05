@@ -1,10 +1,11 @@
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 
 export interface TooltipProps {
     children: ReactNode;
     text?: string;
     top?: number;
     left?: number;
+    disable?: boolean;
     backgroundColor?: string;
 };
 
@@ -16,7 +17,7 @@ const Tooltip = ( props: TooltipProps ) => {
             
             <div
                 className = "cursor-pointer" 
-                onMouseEnter = { () => setDisplay(true) } 
+                onMouseEnter = { () => { if (!props.disable) setDisplay(true) } } 
                 onMouseLeave={ () => setDisplay(false) }
             >
                 { props.children }

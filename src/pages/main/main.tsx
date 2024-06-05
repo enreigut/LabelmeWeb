@@ -150,7 +150,7 @@ const MainPage = () => {
                 </div>
             </div>
 
-            <div className="row">
+            <div className="row" id="jsonViewer">
                 <div className="col-10 col-m-10 p-2 mx-auto">
                     <Exporter dataToExport = { dataToExport }/>
                 </div>

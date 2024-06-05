@@ -279,6 +279,8 @@ p                       { font-family: 'Open Sans';}
 
 /* Transition */
 .transition-all-4       { transition: all, 0.4s }
+.transition-transform-4 { transition: transform 0.4s }
+.transition-background-4 { transition: background-color 0.4s }
 
 /* Hover */
 .opacity-0              { opacity: 0;}
