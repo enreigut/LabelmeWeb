@@ -52,7 +52,6 @@ const TooltipButton = (props: TooltipButtonProps) => {
 
     return (
         <Tooltip
-            top = { 40 }
             text = { tooltipText }
         >
             <button 

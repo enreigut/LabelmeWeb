@@ -26,7 +26,7 @@ const Tooltip = ( props: TooltipProps ) => {
             <div 
                 className = "p-absolute border-radius-5"
                 style = {{
-                    transform: "translate(-50%, 30%)",
+                    transform: "translate(-50%, 100%)",
                     top: props.top ? `${ props.top }px` : "50%",
                     left: props.left ? `${ props.left }px` : "50%",
                     padding: "10px 20px",

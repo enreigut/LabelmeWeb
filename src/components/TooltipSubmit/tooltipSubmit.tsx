@@ -53,7 +53,6 @@ const TooltipSubmit = (props: TooltipSubmitProps) => {
 
     return (
         <Tooltip
-            top = { 40 }
             text = { tooltipText }
         >
 
