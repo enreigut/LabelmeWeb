@@ -141,7 +141,7 @@ const RenderArray = (props: RenderArrayProps) => {
     }
 
     return (
-        <div>
+        <div className = { collapsed ? "d-flex" : "" } >
             <span style={{ display: "inline-flex", alignItems: "center"}}>
                 
                 {
@@ -202,7 +202,7 @@ const RenderObject = (props: RenderObjectProps) => {
     }
 
     return (
-        <div>
+        <div className = { collapsed ? "d-flex" : "" } >
             <span style={{ display: "inline-flex", alignItems: "center"}}>
                 
                 {
