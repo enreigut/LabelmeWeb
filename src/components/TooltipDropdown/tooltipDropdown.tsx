@@ -92,7 +92,7 @@ const TooltipDropdown = (props: TooltipDropdownProps) => {
 
             <div className = "p-relative w-100" onMouseUp = {() => { 
                 setExpanded(!expanded);
-                smoothScrollToElementById("jsonViewer");
+                smoothScrollToElementById("jsonViewer", 0.2);
             }}>
                 <div 
                     className = { expanded ? "flex p-absolute w-100 border-2 o-hidden" : "d-none" }

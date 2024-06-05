@@ -373,6 +373,7 @@ const JSONViewer = ( props: JSONViewerProps ) => {
                             <TooltipButton
                                 backgroundColor = "#1dd1a1"
                                 borderColor = "#10ac84"
+                                hoverColor="#10ac84"
                                 fontColor="white"
                                 text="Download .json"
                                 icon = { FaFileArrowDown }
@@ -395,6 +396,7 @@ const JSONViewer = ( props: JSONViewerProps ) => {
                                 text="Copy to clipboard"
                                 backgroundColor = "#54a0ff"
                                 borderColor = "#2e86de"
+                                hoverColor = "#74b9ff"
                                 fontColor = "white"
                                 icon = { FaClipboard }
                                 disabled = { false }
