@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { calculateCentroidOfPolygon, calculateDistanceBetweenPoints } from "../../utils/math";
 import { drawCircle, drawLine, drawPolygon, drawPolygonControls, drawText, generateRandomColor } from "../../utils/draw";
-import {v4 as uuidv4} from 'uuid'
+import {v4 as uuidv4} from 'uuid';
 
 import { Point } from "../../interfaces/point";
 import { DataArea } from "../../interfaces/dataArea";

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { changeOpcaityFromColor, generateRandomColor, getOverridingConfiguration, hasOverridingConfig } from "../../utils/draw";
 
 import { DataArea } from "../../interfaces/dataArea"
@@ -6,7 +6,7 @@ import { ReservedKeyword } from "../../interfaces/reservedKeyword";
 
 import TooltipButton from "../TooltipButton/tooltipButton";
 import IconWrapper from "../IconWrapper/iconWrapper";
-import { FaCircleInfo, FaFloppyDisk, FaPaintRoller, FaPencil, FaTrashCan } from "react-icons/fa6";
+import { FaCircleExclamation, FaCircleInfo, FaFloppyDisk, FaPaintRoller, FaPencil, FaTrashCan } from "react-icons/fa6";
 import Tooltip from "../Tooltip/tooltip";
 
 interface LabelProps {
@@ -51,15 +51,56 @@ export interface DataAreaInfoProps {
 const DataAreaInfo = ( props: DataAreaInfoProps ) => {
     const [label, setLabel] = useState<string>(props.dataArea.label);
     const [edit, setEdit] = useState<boolean>(false);
+    const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
+
+    const validateInput = (text: string): boolean => {
+        if (text.length === 0) {
+            setErrorMessage("Input cannot be empty");
+            return false;
+        }
+
+        const regexp = /^[a-zA-Z0-9\s,'.-_]*$/;
+        if (!regexp.test(text)) {
+            setErrorMessage("String does not comply with valid text. No special chars. Only chars, digts, spaces and underscores");
+            return false;
+        }
+
+        return true;
+    }
 
     const editInput = (
-        <input 
-            className="mx-2 font-opensans p-1 border-0"
-            type="text" 
-            value = { label }
-            placeholder = { props.dataArea.label } 
-            onChange = {(e) => { setLabel(e.target.value); }}
-        />
+        <div className="d-flex">
+            <input 
+                className="mx-2 font-opensans p-1"
+                style = {{
+                    borderColor: errorMessage ? "#ff7675" : ""
+                }}
+                type="text" 
+                value = { label }
+                placeholder = { props.dataArea.label } 
+                onChange = {(e) => { setLabel(e.target.value); }}
+            />
+
+            {
+                errorMessage 
+                ? (
+                    <div 
+                        className="my-auto font-small"
+                        style = {{
+                            color: "#ff7675"
+                        }}
+                    >
+                        <Tooltip
+                            top = { -20 }
+                            text = { errorMessage }
+                        >
+                            <IconWrapper icon = { FaCircleExclamation }/>
+                        </Tooltip>
+                    </div>
+                )
+                : <></>
+            }
+        </div>
     );
 
     return (
@@ -103,9 +144,12 @@ const DataAreaInfo = ( props: DataAreaInfoProps ) => {
                                     }
                                     onClick={() => {
                                         if (edit) {
-                                            props.dataArea.label = label;
-                                            props.updateDataArea(props.dataArea);
-                                            setEdit(false);
+                                            const trimmedLabel = label.trim();
+                                            if (validateInput(trimmedLabel)) {
+                                                props.dataArea.label = trimmedLabel;
+                                                props.updateDataArea(props.dataArea);
+                                                setEdit(false);
+                                            }
                                         } else {
                                             props.editDataArea(props.dataArea);
                                             setEdit(true);

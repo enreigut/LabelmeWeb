@@ -7,15 +7,17 @@ import { DataArea } from "../../interfaces/dataArea";
 import { Labelme } from "../../interfaces/labelme";
 
 import Box from "../Box/box";
-import Submit1 from "../Inputs/submit1";
-import Button1 from "../Inputs/button1";
 import TooltipButton from "../TooltipButton/tooltipButton";
 import { FaFileArrowUp, FaFileExport, FaTrashCan, FaUpload } from "react-icons/fa6";
 import TooltipSubmit from "../TooltipSubmit/tooltipSubmit";
+import { ReservedKeyword } from "../../interfaces/reservedKeyword";
+import TooltipDropdown from "../TooltipDropdown/tooltipDropdown";
+import TooltipDropdownOption from "../TooltipDropdownOption/tooltipDropdownOption";
 
 export interface LoaderProps {
     dataAreas: Array<DataArea> | undefined;
     canvasSize: Size<number> | undefined;
+    configuration: ReservedKeyword;
 
     loadImageData: (data: ImageData | undefined) => void;
     loadDataAreas: (data: Array<DataArea> | undefined) => void;
@@ -84,19 +86,21 @@ const Loader = (props: LoaderProps) => {
     };
     
     // Function that maps from DataArea to labelme interface with correct dimensions
-    const exportDataAreas = () => {
+    const exportDataAreas = (newDesiredSize?: Size<number>): Boolean => {
         if (props.dataAreas && props.canvasSize && imageData) {
             props.exportDataArea(
                 {
                     version: "4.6.0",
                     flags: {},
-                    shapes: props.dataAreas.map((dataArea) => mapDataAreaToShape(dataArea, imageData)),
-                    imageWidth: imageData.size.width,
-                    imageHeight: imageData.size.height
+                    shapes: props.dataAreas.map((dataArea) => mapDataAreaToShape(dataArea, imageData, newDesiredSize)),
+                    imageWidth: newDesiredSize?.width ?? imageData.size.width,
+                    imageHeight: newDesiredSize?.height ?? imageData.size.height
                 }, 
                 props.canvasSize
             );
         }
+
+        return false;
     };
 
     const loadData = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -112,7 +116,11 @@ const Loader = (props: LoaderProps) => {
 
                     if (fileContent) {
                         const toJson: Labelme = JSON.parse(fileContent.toString()!);
-                        const dataAreas: Array<DataArea> = mapLabelmeToDatashare(toJson, props.canvasSize ?? defaultImageSize);
+                        const dataAreas: Array<DataArea> = mapLabelmeToDatashare(
+                            toJson, 
+                            props.canvasSize ?? defaultImageSize,
+                            props.configuration
+                        );
                         props.loadDataAreas(dataAreas);
                     }
                 }
@@ -125,7 +133,8 @@ const Loader = (props: LoaderProps) => {
     const deleteImageData = () => {
         setImageData(undefined);
     };
-    
+
+
     useEffect(() => {
         props.loadImageData(imageData);
     }, [ imageData ]);
@@ -166,7 +175,7 @@ const Loader = (props: LoaderProps) => {
                     </div>
 
                     <div className="w-100 mr-2">
-                        <TooltipButton 
+                        <TooltipDropdown 
                             text="Export Data"
                             padding = "10px 20px"
                             fontColor = "white"
@@ -175,8 +184,31 @@ const Loader = (props: LoaderProps) => {
                             borderColor = "#2e86de"
                             hoverColor = "#74b9ff"
                             disabled = { props.dataAreas && props.dataAreas.length <= 0 ? true : false }
-                            onClick={exportDataAreas} 
-                        />
+                        >
+                            <TooltipDropdownOption 
+                                text = {imageData ? `${imageData.size.width} x ${imageData.size.height}` : "Original size"}
+                                padding = "10px 20px"
+                                fontColor = "white"
+                                backgroundColor = "#54a0ff"
+                                borderColor = "#2e86de"
+                                hoverColor = "#74b9ff"
+                                onClick={ exportDataAreas } 
+                            />
+
+                            <TooltipDropdownOption 
+                                text="1080 x 720"
+                                padding = "10px 20px"
+                                fontColor = "white"
+                                backgroundColor = "#54a0ff"
+                                borderColor = "#2e86de"
+                                hoverColor = "#74b9ff"
+                                onClick={() => {exportDataAreas({
+                                    width: 1280,
+                                    height: 720
+                                })}} 
+                            />
+
+                        </TooltipDropdown>
                     </div>
 
                     <TooltipButton 

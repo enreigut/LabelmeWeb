@@ -210,6 +210,9 @@ p                       { font-family: 'Open Sans';}
 .color-secondary        { color: var(--color-secondary) }
 .color-tertiary         { color: var(--color-tertiary) }
 
+/* Outline */
+.outline-0              { outline: none; }
+
 /* Borders */
 .border-0               { border-width: 0px; border-style: solid; }
 .border-1               { border-width: 1px; border-style: solid; }
@@ -279,6 +282,8 @@ p                       { font-family: 'Open Sans';}
 
 /* Transition */
 .transition-all-4       { transition: all, 0.4s }
+.transition-transform-4 { transition: transform 0.4s }
+.transition-background-4 { transition: background-color 0.4s }
 
 /* Hover */
 .opacity-0              { opacity: 0;}

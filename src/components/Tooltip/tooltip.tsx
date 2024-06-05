@@ -1,10 +1,11 @@
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 
 export interface TooltipProps {
     children: ReactNode;
     text?: string;
     top?: number;
     left?: number;
+    disable?: boolean;
     backgroundColor?: string;
 };
 
@@ -16,7 +17,7 @@ const Tooltip = ( props: TooltipProps ) => {
             
             <div
                 className = "cursor-pointer" 
-                onMouseEnter = { () => setDisplay(true) } 
+                onMouseEnter = { () => { if (!props.disable) setDisplay(true) } } 
                 onMouseLeave={ () => setDisplay(false) }
             >
                 { props.children }
@@ -25,7 +26,7 @@ const Tooltip = ( props: TooltipProps ) => {
             <div 
                 className = "p-absolute border-radius-5"
                 style = {{
-                    transform: "translate(-50%, 30%)",
+                    transform: "translate(-50%, 100%)",
                     top: props.top ? `${ props.top }px` : "50%",
                     left: props.left ? `${ props.left }px` : "50%",
                     padding: "10px 20px",

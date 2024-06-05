@@ -1,22 +1,22 @@
 import { IconType } from "react-icons";
 import IconWrapper from "../IconWrapper/iconWrapper";
 import Tooltip from "../Tooltip/tooltip";
-import { CSSProperties, ChangeEventHandler, useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 
-export interface TooltipSubmitProps {
+export interface TooltipDropdownOptionProps {
     text: string;
-    disabled: boolean;
+    children?: ReactNode;
+    disabled?: boolean;
     padding?: string;
     backgroundColor?: string;
     borderColor?: string;
-    fontColor?: string;
     hoverColor?: string;
+    fontColor?: string;
     icon?: IconType
-    accept?: string;
-    onChange: ChangeEventHandler<HTMLInputElement>;
+    onClick: () => void;
 }
 
-const TooltipSubmit = (props: TooltipSubmitProps) => {
+const TooltipDropdownOption = (props: TooltipDropdownOptionProps) => {
     // Configuration
     const breakpointPx: number = 760;
 
@@ -53,42 +53,35 @@ const TooltipSubmit = (props: TooltipSubmitProps) => {
 
     return (
         <Tooltip
+            top = { 40 }
             text = { tooltipText }
+            disable = { true }
         >
-
-            <label 
-                className = {`font-opensans d-block font-bold font-small border-2 border-radius-5 transition-all-4 ${ props.disabled ? 'cursor-not-allowed' : 'cursor-pointer'}`}
-                style={{
+            <button 
+                className = {`font-opensans font-small border-0 transition-all-4 ${ props.disabled ? 'cursor-not-allowed' : 'cursor-pointer'} w-100`}
+                style = {{
                     padding: props.padding ?? "5px 10px",
-                    backgroundColor: props.disabled ? "#9b9b9b" : isHover ? props.hoverColor ?? "white" : props.backgroundColor ?? "#484F56",
-                    borderColor: props.disabled ? "#7f8c8d" : props.borderColor ?? "#3d3d3d"
+                    backgroundColor: props.disabled ? "#9b9b9b" : isHover ? props.hoverColor ?? "white" : props.backgroundColor ?? "#9b9b9b",
+                    borderColor: props.disabled ? "#7f8c8d" : props.borderColor ?? "#3d3d3d",
+                    color: props.fontColor ?? "#3d3d3d"
                 }}
+                disabled = { props.disabled }
                 onMouseEnter = {() => { setIsHover(true); }}
                 onMouseLeave = {() => { setIsHover(false); }}
+                onClick={() => {
+                    if(!props.disabled) {
+                        props.onClick();
+                    }
+                }}
             >
-                <input
-                    className="d-none"
-                    type="file"
-                    disabled = { props.disabled }
-                    onChange={(e) => {
-                        if (!props.disabled) {
-                            props.onChange(e)
-                        }
-                    }} 
-                    accept = { props.accept }
-                />
-
-                <div className="d-flex color-white">
+                <div className="d-flex">
                     {
-                        props.icon && showIcon 
-                            ? <IconWrapper classname = "m-auto" style = {{ padding: "5px 10px"}} icon = { props.icon } /> 
-                            : (<p className="m-auto text-center"> { props.text } </p>)
+                        props.icon && showIcon ? <IconWrapper classname = "m-auto" style = {{ padding: "5px 10px"}} icon = { props.icon } /> : (<p className="m-auto text-center"> { props.text } </p>)
                     }
                 </div>
-            </label>
-
+            </button>
         </Tooltip>
     )
 };
 
-export default TooltipSubmit;
+export default TooltipDropdownOption;

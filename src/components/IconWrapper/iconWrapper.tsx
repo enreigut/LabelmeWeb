@@ -1,4 +1,4 @@
-import { CSSProperties, useState } from "react";
+import { CSSProperties } from "react";
 import { IconType } from "react-icons";
 
 export interface IconWrapperProps {
@@ -16,7 +16,7 @@ const IconWrapper = ( props: IconWrapperProps) => {
             className = { ["d-flex", props.classname].join(" ") } 
             style = { props.style }
         >
-            <Icon />
+            <Icon className="m-auto"/>
         </div>
     )
 };
