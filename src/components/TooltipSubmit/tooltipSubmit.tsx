@@ -70,10 +70,11 @@ const TooltipSubmit = (props: TooltipSubmitProps) => {
                 <input
                     className="d-none"
                     type="file"
+                    disabled = { props.disabled }
                     onChange={(e) => {
                         if (!props.disabled) {
                             props.onChange(e)
-                        } 
+                        }
                     }} 
                     accept = { props.accept }
                 />

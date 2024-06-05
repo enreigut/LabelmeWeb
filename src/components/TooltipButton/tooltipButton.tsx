@@ -63,6 +63,7 @@ const TooltipButton = (props: TooltipButtonProps) => {
                     borderColor: props.disabled ? "#7f8c8d" : props.borderColor ?? "#3d3d3d",
                     color: props.fontColor ?? "#3d3d3d"
                 }}
+                disabled = { props.disabled }
                 onMouseEnter = {() => { setIsHover(true); }}
                 onMouseLeave = {() => { setIsHover(false); }}
                 onClick={() => {

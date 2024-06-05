@@ -7,15 +7,15 @@ import { DataArea } from "../../interfaces/dataArea";
 import { Labelme } from "../../interfaces/labelme";
 
 import Box from "../Box/box";
-import Submit1 from "../Inputs/submit1";
-import Button1 from "../Inputs/button1";
 import TooltipButton from "../TooltipButton/tooltipButton";
 import { FaFileArrowUp, FaFileExport, FaTrashCan, FaUpload } from "react-icons/fa6";
 import TooltipSubmit from "../TooltipSubmit/tooltipSubmit";
+import { ReservedKeyword } from "../../interfaces/reservedKeyword";
 
 export interface LoaderProps {
     dataAreas: Array<DataArea> | undefined;
     canvasSize: Size<number> | undefined;
+    configuration: ReservedKeyword;
 
     loadImageData: (data: ImageData | undefined) => void;
     loadDataAreas: (data: Array<DataArea> | undefined) => void;
@@ -112,7 +112,11 @@ const Loader = (props: LoaderProps) => {
 
                     if (fileContent) {
                         const toJson: Labelme = JSON.parse(fileContent.toString()!);
-                        const dataAreas: Array<DataArea> = mapLabelmeToDatashare(toJson, props.canvasSize ?? defaultImageSize);
+                        const dataAreas: Array<DataArea> = mapLabelmeToDatashare(
+                            toJson, 
+                            props.canvasSize ?? defaultImageSize,
+                            props.configuration
+                        );
                         props.loadDataAreas(dataAreas);
                     }
                 }

@@ -129,6 +129,7 @@ const MainPage = () => {
                     <Loader 
                         dataAreas = { dataAreas }
                         canvasSize = { canvasSize }
+                        configuration = { reservedKeywords }
                         loadDataAreas = { handleDataAreas }
                         loadImageData = { handleLoadImage }
                         exportDataArea = { exportDataAreas }
