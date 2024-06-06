@@ -56,6 +56,7 @@ const Canvas = ( props: ImageCanvasProps ) => {
     }
 
     const handleMouseDown = (e: React.MouseEvent) => {
+        // Left clcik
         if(e.button === 0) {
             if (canvasRef.current) {
                 const rect = canvasRef.current.getBoundingClientRect();
@@ -120,6 +121,13 @@ const Canvas = ( props: ImageCanvasProps ) => {
                     setClicked(true);
                 }
             }   
+        } else if (e.button === 2) { // right click
+            if (isDrawing) {
+                if (points.length > 1) {
+                    points.splice(-1);
+                    setPoints([...points]);
+                }
+            }
         }
     };
 
@@ -368,7 +376,8 @@ const Canvas = ( props: ImageCanvasProps ) => {
     return (
         <div ref = { parentRef }>
             <canvas 
-                ref = { canvasRef } 
+                ref = { canvasRef }
+                onContextMenu = { (e) => e.preventDefault() } 
                 onMouseDown={ handleMouseDown }
                 onMouseMove={ handleMouseMove }
                 onMouseUp={ handleMouseUp }
