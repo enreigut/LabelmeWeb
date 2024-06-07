@@ -173,6 +173,8 @@ p                       { font-family: 'Open Sans';}
 /* Font styles */
 .font-bold              { font-weight: bold; }
 .font-bolder            { font-weight: bolder; }
+.font-light             { font-weight: light; }
+.font-lighter           { font-weight: lighter; }
 
 /* Background Colors */
 .bg-info                { background-color: blue; }

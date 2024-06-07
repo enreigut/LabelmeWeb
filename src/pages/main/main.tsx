@@ -12,6 +12,7 @@ import Box from "../../components/Box/box";
 import Exporter from "../../components/Exporter/exporter";
 import { ReservedKeyword } from "../../interfaces/reservedKeyword";
 import { overrideDefaultConfigWithReservedKeywordConfig } from "../../utils/draw";
+import CollapseBox from "../../components/CollapseBox/collapseBox";
 
 const MainPage = () => {
     // Configuration
@@ -96,6 +97,25 @@ const MainPage = () => {
             <div className="row">
                 <div className="col-10 col-m-10 p-2 mx-auto">
                     <h1 className="color-white">LabelmeUI</h1>
+                </div>
+            </div>
+
+            <div className="row">
+                <div className="col-10 col-m-10 p-2 mx-auto">
+                    <CollapseBox 
+                        text = "How to label ?"
+                        backgroundColor = "#636e72"
+                        borderColor = "#2d3436"
+                    >
+                        <br></br>
+                        <p className = "color-white font-small font-lighter">Left click on canvas to draw</p>
+                        <br></br>
+                        <p className = "color-white font-small font-lighter">If you are in draw mode, right click to erase points</p>
+                        <br></br>
+                        <p className = "color-white font-small font-lighter">To close a shape, you must finish clicking the starting point. It will highlight in yellow when the mouse is over</p>
+                        <br></br>
+                        <p className = "color-white font-small font-lighter">To edit the shape, once you click edit in the labels, you can go to the canvas and edit the points</p>
+                    </CollapseBox>
                 </div>
             </div>
 
