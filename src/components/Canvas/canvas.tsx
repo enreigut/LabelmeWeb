@@ -56,7 +56,7 @@ const Canvas = ( props: ImageCanvasProps ) => {
     }
 
     const handleMouseDown = (e: React.MouseEvent) => {
-        // Left clcik
+        // Left click
         if(e.button === 0) {
             if (canvasRef.current) {
                 const rect = canvasRef.current.getBoundingClientRect();
@@ -83,10 +83,10 @@ const Canvas = ( props: ImageCanvasProps ) => {
     
                     let pointToSet: Point = cursor;
     
-                    // Bigger than 2 since we only want to close polygon not lines
+                    // Bigger than 3 since we only want to close polygon not lines
                     // We can do some more complex logic here to see if:
                     //  - The points have similar slope meaning they are in a straightline (we want to not allow this I guess)
-                    if (points.length >= 2) {
+                    if (points.length >= 3) {
                         if (calculateDistanceBetweenPoints(cursor, points[0], canvasSize) <= minDistanceFromPointToMergeInPx) {
                             pointToSet = points[0];
                         }
@@ -108,10 +108,18 @@ const Canvas = ( props: ImageCanvasProps ) => {
                         setLabelId(labelId + 1);
                         setPoints([]);
                     } else {
-                        // If the point is further away enough from previous poinyt we set it, if not, nope
+                        // If the point is further away enough from previous point we set it, if not, nope
                         if (points.length > 0) {
                             if (calculateDistanceBetweenPoints(points[points.length - 1], pointToSet, canvasSize) > minDistanceFromPointToMergeInPx) {
-                                setPoints([...points, pointToSet]);
+                                // If the length of points is less than 3 (min points for the smallest polygon) then we cannot set a point next to the origin
+                                // to protect from making straight lines
+                                if (points.length < 3) {
+                                    if (calculateDistanceBetweenPoints(points[0], pointToSet, canvasSize) > minDistanceFromPointToMergeInPx) {
+                                        setPoints([...points, pointToSet]);
+                                    }
+                                } else {
+                                    setPoints([...points, pointToSet]);
+                                }
                             }
                         } else {
                             setPoints([...points, pointToSet]);
