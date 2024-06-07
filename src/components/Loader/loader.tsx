@@ -196,7 +196,7 @@ const Loader = (props: LoaderProps) => {
                             />
 
                             <TooltipDropdownOption 
-                                text="1080 x 720"
+                                text="1280 x 720"
                                 padding = "10px 20px"
                                 fontColor = "white"
                                 backgroundColor = "#54a0ff"
